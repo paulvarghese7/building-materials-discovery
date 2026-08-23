@@ -4,6 +4,7 @@ import { products } from '@/data/products';
 import {
   MAX_SEARCH_QUERY_LENGTH,
   categoryLabels,
+  createCatalogueHref,
   filterProducts,
   getProductById,
   getSearchIntentSuggestion,
@@ -78,6 +79,30 @@ describe('catalogue filter parsing', () => {
     expect(parseCatalogueFilters({ q: 'a'.repeat(150) }).query).toHaveLength(
       MAX_SEARCH_QUERY_LENGTH,
     );
+  });
+});
+
+describe('catalogue URLs', () => {
+  it('creates a stable URL containing only active discovery state', () => {
+    expect(
+      createCatalogueHref({
+        query: 'acoustic board',
+        category: 'boards',
+        need: 'acoustic',
+      }),
+    ).toBe('/products?q=acoustic+board&category=boards&need=acoustic');
+  });
+
+  it('returns the catalogue root when no discovery state is active', () => {
+    expect(createCatalogueHref({ query: '' })).toBe('/products');
+  });
+
+  it('normalizes and limits query text before adding it to a URL', () => {
+    const href = createCatalogueHref({ query: `  ${'a'.repeat(120)}   board  ` });
+    const query = new URL(href, 'https://buildmatch.test').searchParams.get('q');
+
+    expect(query).toHaveLength(MAX_SEARCH_QUERY_LENGTH);
+    expect(query).toBe('a'.repeat(MAX_SEARCH_QUERY_LENGTH));
   });
 });
 

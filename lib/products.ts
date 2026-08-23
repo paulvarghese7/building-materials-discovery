@@ -103,6 +103,27 @@ export function parseCatalogueFilters(searchParams: CatalogueSearchParams): Cata
   };
 }
 
+// Creates a catalogue URL from validated discovery state in a consistent parameter order.
+export function createCatalogueHref(filters: CatalogueFilters): string {
+  const searchParams = new URLSearchParams();
+
+  if (filters.query) {
+    searchParams.set('q', cleanQuery(filters.query));
+  }
+
+  if (filters.category) {
+    searchParams.set('category', filters.category);
+  }
+
+  if (filters.need) {
+    searchParams.set('need', filters.need);
+  }
+
+  const queryString = searchParams.toString();
+
+  return queryString ? `/products?${queryString}` : '/products';
+}
+
 // Finds the product used by an individual product-detail route.
 export function getProductById(id: string): Product | undefined {
   return products.find((product) => product.id === id);
