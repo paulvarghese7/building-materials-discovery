@@ -9,7 +9,7 @@ vi.mock('next/navigation', () => ({
 }));
 
 import Home from '@/app/page';
-import { performanceNeeds, productCategories } from '@/lib/products';
+import { projectRequirements, productTypes } from '@/lib/products';
 
 describe('homepage discovery links', () => {
   const markup = renderToStaticMarkup(<Home />);
@@ -22,15 +22,20 @@ describe('homepage discovery links', () => {
     expect(markup).toContain('aria-autocomplete="list"');
   });
 
-  it('links every category into its filtered catalogue view', () => {
-    for (const category of productCategories) {
-      expect(markup).toContain(`href="/products?category=${category}"`);
+  it('links every product type into its filtered catalogue view', () => {
+    for (const productType of productTypes) {
+      expect(markup).toContain(`href="/products?type=${productType}"`);
     }
   });
 
-  it('links every performance need into its filtered catalogue view', () => {
-    for (const need of performanceNeeds) {
-      expect(markup).toContain(`href="/products?need=${need}"`);
+  it('links every project requirement into its filtered catalogue view', () => {
+    for (const projectRequirement of projectRequirements) {
+      expect(markup).toContain(`href="/products?requirement=${projectRequirement}"`);
     }
+  });
+
+  it('uses the shared discovery terminology in both homepage paths', () => {
+    expect(markup).toContain('Browse by product type');
+    expect(markup).toContain('Browse by project requirement');
   });
 });

@@ -3,14 +3,14 @@ import { describe, expect, it } from 'vitest';
 import { products } from '@/data/products';
 import {
   MAX_SEARCH_QUERY_LENGTH,
-  categoryLabels,
+  productTypeLabels,
   createCatalogueHref,
-  createSearchIntentHref,
+  createSearchRequirementIntentHref,
   filterProducts,
   getProductById,
-  getSearchIntentSuggestion,
+  getSearchRequirementIntentSuggestion,
   parseCatalogueFilters,
-  performanceNeedLabels,
+  projectRequirementLabels,
   searchProducts,
 } from '@/lib/products';
 
@@ -21,17 +21,17 @@ describe('product dataset', () => {
     expect(new Set(products.map((product) => product.sku))).toHaveLength(20);
   });
 
-  it('contains five products in every category', () => {
-    for (const category of Object.keys(categoryLabels)) {
-      expect(products.filter((product) => product.category === category)).toHaveLength(5);
+  it('contains five products in every product type', () => {
+    for (const productType of Object.keys(productTypeLabels)) {
+      expect(products.filter((product) => product.productType === productType)).toHaveLength(5);
     }
   });
 
-  it('matches the locked performance distribution', () => {
-    expect(products.filter((product) => product.performanceNeeds.includes('acoustic'))).toHaveLength(5);
-    expect(products.filter((product) => product.performanceNeeds.includes('fire'))).toHaveLength(5);
-    expect(products.filter((product) => product.performanceNeeds.includes('moisture'))).toHaveLength(6);
-    expect(products.filter((product) => product.performanceNeeds.length === 0)).toHaveLength(6);
+  it('matches the locked project-requirement distribution', () => {
+    expect(products.filter((product) => product.projectRequirements.includes('acoustic'))).toHaveLength(5);
+    expect(products.filter((product) => product.projectRequirements.includes('fire'))).toHaveLength(5);
+    expect(products.filter((product) => product.projectRequirements.includes('moisture'))).toHaveLength(6);
+    expect(products.filter((product) => product.projectRequirements.length === 0)).toHaveLength(6);
   });
 
   it('gives every product at least four specifications', () => {
@@ -54,25 +54,52 @@ describe('catalogue filter parsing', () => {
     expect(
       parseCatalogueFilters({
         q: '  acoustic   board  ',
-        category: 'boards',
-        need: 'acoustic',
+        type: 'boards',
+        requirement: 'acoustic',
       }),
-    ).toEqual({ query: 'acoustic board', category: 'boards', need: 'acoustic' });
+    ).toEqual({
+      query: 'acoustic board',
+      productType: 'boards',
+      projectRequirement: 'acoustic',
+    });
   });
 
   it('uses the first repeated parameter value', () => {
     expect(
       parseCatalogueFilters({
         q: ['board', 'ignored'],
-        category: ['boards', 'profiles'],
-        need: ['fire', 'moisture'],
+        type: ['boards', 'profiles'],
+        requirement: ['fire', 'moisture'],
       }),
-    ).toEqual({ query: 'board', category: 'boards', need: 'fire' });
+    ).toEqual({ query: 'board', productType: 'boards', projectRequirement: 'fire' });
   });
 
-  it('ignores unsupported category and performance values', () => {
-    expect(parseCatalogueFilters({ q: ' board ', category: 'banana', need: 'unknown' })).toEqual({
-      query: 'board',
+  it('ignores unsupported product-type and project-requirement values', () => {
+    expect(
+      parseCatalogueFilters({ q: ' board ', type: 'banana', requirement: 'unknown' }),
+    ).toEqual({ query: 'board' });
+  });
+
+  it('accepts legacy category and need parameters as compatibility aliases', () => {
+    expect(parseCatalogueFilters({ category: 'boards', need: 'fire' })).toEqual({
+      query: '',
+      productType: 'boards',
+      projectRequirement: 'fire',
+    });
+  });
+
+  it('prefers supported canonical parameters over legacy aliases', () => {
+    expect(
+      parseCatalogueFilters({
+        type: 'insulation',
+        category: 'boards',
+        requirement: 'moisture',
+        need: 'fire',
+      }),
+    ).toEqual({
+      query: '',
+      productType: 'insulation',
+      projectRequirement: 'moisture',
     });
   });
 
@@ -88,10 +115,10 @@ describe('catalogue URLs', () => {
     expect(
       createCatalogueHref({
         query: 'acoustic board',
-        category: 'boards',
-        need: 'acoustic',
+        productType: 'boards',
+        projectRequirement: 'acoustic',
       }),
-    ).toBe('/products?q=acoustic+board&category=boards&need=acoustic');
+    ).toBe('/products?q=acoustic+board&type=boards&requirement=acoustic');
   });
 
   it('returns the catalogue root when no discovery state is active', () => {
@@ -117,12 +144,12 @@ describe('product search', () => {
     expect(searchProducts(products, query).map((product) => product.id)).toContain(expectedId);
   });
 
-  it('searches human-readable category labels', () => {
-    expect(searchProducts(products, categoryLabels.accessories)).toHaveLength(5);
+  it('searches human-readable product-type labels', () => {
+    expect(searchProducts(products, productTypeLabels.accessories)).toHaveLength(5);
   });
 
-  it('searches human-readable performance labels', () => {
-    expect(searchProducts(products, performanceNeedLabels.fire)).toHaveLength(5);
+  it('searches human-readable project-requirement labels', () => {
+    expect(searchProducts(products, projectRequirementLabels.fire)).toHaveLength(5);
   });
 
   it('matches every token in a multi-word query regardless of whitespace and casing', () => {
@@ -138,9 +165,9 @@ describe('product search', () => {
 
 describe('product filtering', () => {
   it.each(['boards', 'insulation', 'profiles', 'accessories'] as const)(
-    'filters the %s category',
-    (category) => {
-      expect(filterProducts(products, { query: '', category })).toHaveLength(5);
+    'filters the %s product type',
+    (productType) => {
+      expect(filterProducts(products, { query: '', productType })).toHaveLength(5);
     },
   );
 
@@ -148,15 +175,15 @@ describe('product filtering', () => {
     ['acoustic', 5],
     ['fire', 5],
     ['moisture', 6],
-  ] as const)('filters the %s performance need', (need, expectedCount) => {
-    expect(filterProducts(products, { query: '', need })).toHaveLength(expectedCount);
+  ] as const)('filters the %s project requirement', (projectRequirement, expectedCount) => {
+    expect(filterProducts(products, { query: '', projectRequirement })).toHaveLength(expectedCount);
   });
 
-  it('allows a multi-performance product to match either need', () => {
-    const acousticIds = filterProducts(products, { query: '', need: 'acoustic' }).map(
+  it('allows a multi-requirement product to match either project requirement', () => {
+    const acousticIds = filterProducts(products, { query: '', projectRequirement: 'acoustic' }).map(
       (product) => product.id,
     );
-    const fireIds = filterProducts(products, { query: '', need: 'fire' }).map(
+    const fireIds = filterProducts(products, { query: '', projectRequirement: 'fire' }).map(
       (product) => product.id,
     );
 
@@ -164,16 +191,24 @@ describe('product filtering', () => {
     expect(fireIds).toContain('securewool-af');
   });
 
-  it('combines search, category, and performance filters with AND semantics', () => {
+  it('combines search, product-type, and project-requirement filters with AND semantics', () => {
     expect(
-      filterProducts(products, { query: 'board', category: 'boards', need: 'fire' }).map(
-        (product) => product.id,
-      ),
+      filterProducts(products, {
+        query: 'board',
+        productType: 'boards',
+        projectRequirement: 'fire',
+      }).map((product) => product.id),
     ).toEqual(['flameboard-type-f', 'shieldboard-fm']);
   });
 
   it('preserves the intentional profiles and fire empty result', () => {
-    expect(filterProducts(products, { query: '', category: 'profiles', need: 'fire' })).toEqual([]);
+    expect(
+      filterProducts(products, {
+        query: '',
+        productType: 'profiles',
+        projectRequirement: 'fire',
+      }),
+    ).toEqual([]);
   });
 });
 
@@ -182,24 +217,28 @@ describe('search-intent suggestions', () => {
     ['noise', 'acoustic'],
     ['heat', 'fire'],
     ['damp', 'moisture'],
-  ] as const)('maps %s to %s after a zero-result search', (query, expectedNeed) => {
-    expect(getSearchIntentSuggestion(products, { query })).toBe(expectedNeed);
+  ] as const)('maps %s to %s after a zero-result search', (query, expectedRequirement) => {
+    expect(getSearchRequirementIntentSuggestion(products, { query })).toBe(expectedRequirement);
   });
 
   it('does not suggest an intent when direct results already exist', () => {
-    expect(getSearchIntentSuggestion(products, { query: 'sound' })).toBeUndefined();
+    expect(getSearchRequirementIntentSuggestion(products, { query: 'sound' })).toBeUndefined();
   });
 
   it('does not suggest an intent for an empty query', () => {
-    expect(getSearchIntentSuggestion(products, { query: '' })).toBeUndefined();
+    expect(getSearchRequirementIntentSuggestion(products, { query: '' })).toBeUndefined();
   });
 
-  it('creates an explicit CTA that removes the query, preserves category, and replaces need', () => {
+  it('creates a CTA that removes the query, preserves type, and replaces requirement', () => {
     expect(
-      createSearchIntentHref(
-        { query: 'noise', category: 'insulation', need: 'fire' },
+      createSearchRequirementIntentHref(
+        {
+          query: 'noise',
+          productType: 'insulation',
+          projectRequirement: 'fire',
+        },
         'acoustic',
       ),
-    ).toBe('/products?category=insulation&need=acoustic');
+    ).toBe('/products?type=insulation&requirement=acoustic');
   });
 });

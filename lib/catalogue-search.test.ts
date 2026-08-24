@@ -13,10 +13,10 @@ function makeProduct(id: string, overrides: Partial<Product> = {}): Product {
     id,
     name: `Product ${id}`,
     sku: `SKU-${id}`,
-    category: 'boards',
+    productType: 'boards',
     shortDescription: 'General product summary.',
     description: 'General product description.',
-    performanceNeeds: [],
+    projectRequirements: [],
     features: [],
     specifications: [{ label: 'Width', value: '100 mm' }],
     ...overrides,
@@ -123,17 +123,17 @@ describe('catalogue typo recovery', () => {
 
 describe('contextual catalogue facets', () => {
   it('keeps one fuzzy interpretation fixed while applying filters and counts', () => {
-    const filters = { query: 'acustic', category: 'boards' } as const;
+    const filters = { query: 'acustic', productType: 'boards' } as const;
     const result = searchCatalogue(products, filters);
     const counts = getCatalogueFacetCounts(result, filters);
 
     expect(result.mode).toBe('fuzzy');
     expect(result.allMatches).toHaveLength(5);
     expect(result.matches.map(({ product }) => product.id)).toEqual(['quietboard-15']);
-    expect(counts.categories.boards).toBe(1);
-    expect(counts.categories.insulation).toBe(2);
-    expect(counts.allPerformanceNeeds).toBe(1);
-    expect(counts.performanceNeeds.acoustic).toBe(1);
+    expect(counts.productTypes.boards).toBe(1);
+    expect(counts.productTypes.insulation).toBe(2);
+    expect(counts.allProjectRequirements).toBe(1);
+    expect(counts.projectRequirements.acoustic).toBe(1);
   });
 });
 
@@ -153,13 +153,13 @@ describe('catalogue suggestions', () => {
   it('preserves active filters in the search-all action', () => {
     const suggestions = getCatalogueSuggestions(products, 'quiet', {
       query: '',
-      category: 'boards',
-      need: 'acoustic',
+      productType: 'boards',
+      projectRequirement: 'acoustic',
     });
 
     expect(suggestions.at(-1)).toMatchObject({
       type: 'search',
-      href: '/products?q=quiet&category=boards&need=acoustic',
+      href: '/products?q=quiet&type=boards&requirement=acoustic',
     });
   });
 });

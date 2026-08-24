@@ -1,11 +1,11 @@
-export type ProductCategory =
+export type ProductType =
   | 'boards'
   | 'insulation'
   | 'profiles'
   | 'accessories';
 
 // Tags describe when a fictional product is useful to discover; they are not standalone certification claims.
-export type PerformanceNeed = 'acoustic' | 'fire' | 'moisture';
+export type ProjectRequirement = 'acoustic' | 'fire' | 'moisture';
 
 export interface Specification {
   label: string;
@@ -16,10 +16,10 @@ export interface Product {
   id: string;
   name: string;
   sku: string;
-  category: ProductCategory;
+  productType: ProductType;
   shortDescription: string;
   description: string;
-  performanceNeeds: PerformanceNeed[];
+  projectRequirements: ProjectRequirement[];
   features: string[];
   specifications: Specification[];
 }

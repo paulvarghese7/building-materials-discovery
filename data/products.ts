@@ -6,11 +6,11 @@ export const products: Product[] = [
     id: 'coreboard-standard',
     name: 'CoreBoard Standard',
     sku: 'BLD-CB-1209',
-    category: 'boards',
+    productType: 'boards',
     shortDescription: 'Everyday lining board for internal partitions and ceilings.',
     description:
-      'A versatile gypsum board for routine internal wall and ceiling lining where no specific performance need is being modelled.',
-    performanceNeeds: [],
+      'A versatile gypsum board for routine internal wall and ceiling lining where no specific project requirement is being modelled.',
+    projectRequirements: [],
     features: ['Tapered long edges for joint finishing', 'Suitable for dry internal areas', 'Easy to cut and handle'],
     specifications: [
       { label: 'Thickness', value: '12.5 mm' },
@@ -23,11 +23,11 @@ export const products: Product[] = [
     id: 'quietboard-15',
     name: 'QuietBoard 15',
     sku: 'BLD-QB-1512',
-    category: 'boards',
+    productType: 'boards',
     shortDescription: 'Higher-mass board for sound-sensitive internal partitions.',
     description:
       'A dense gypsum board intended for product discovery where improved acoustic performance is a project priority.',
-    performanceNeeds: ['acoustic'],
+    projectRequirements: ['acoustic'],
     features: ['Higher-mass core', 'Tapered long edges for joint finishing', 'Designed for internal partition linings'],
     specifications: [
       { label: 'Thickness', value: '15 mm' },
@@ -40,11 +40,11 @@ export const products: Product[] = [
     id: 'flameboard-type-f',
     name: 'FlameBoard Type F',
     sku: 'BLD-FB-1512',
-    category: 'boards',
+    productType: 'boards',
     shortDescription: 'Fire-resistant lining for protected wall and ceiling assemblies.',
     description:
       'A gypsum board for discovery in fire-related lining applications, with a reinforced core for demanding internal assemblies.',
-    performanceNeeds: ['fire'],
+    projectRequirements: ['fire'],
     features: ['Reinforced gypsum core', 'Tapered long edges for joint finishing', 'For protected internal linings'],
     specifications: [
       { label: 'Thickness', value: '15 mm' },
@@ -57,11 +57,11 @@ export const products: Product[] = [
     id: 'aquaboard-mr',
     name: 'AquaBoard MR',
     sku: 'BLD-AB-1212',
-    category: 'boards',
+    productType: 'boards',
     shortDescription: 'Moisture-resistant lining for humid interior areas.',
     description:
       'A treated gypsum board for interior areas where moisture resistance is relevant during material discovery.',
-    performanceNeeds: ['moisture'],
+    projectRequirements: ['moisture'],
     features: ['Treated core for humid interiors', 'Tapered long edges for joint finishing', 'For non-continuously wet spaces'],
     specifications: [
       { label: 'Thickness', value: '12.5 mm' },
@@ -74,11 +74,11 @@ export const products: Product[] = [
     id: 'shieldboard-fm',
     name: 'ShieldBoard FM',
     sku: 'BLD-SB-1512',
-    category: 'boards',
+    productType: 'boards',
     shortDescription: 'Dual-performance board for humid areas requiring fire resistance.',
     description:
       'A gypsum board for discovering lining products where both moisture and fire requirements need consideration.',
-    performanceNeeds: ['fire', 'moisture'],
+    projectRequirements: ['fire', 'moisture'],
     features: ['Reinforced and treated gypsum core', 'Tapered long edges for joint finishing', 'For humid internal lining applications'],
     specifications: [
       { label: 'Thickness', value: '15 mm' },
@@ -91,11 +91,11 @@ export const products: Product[] = [
     id: 'soundwool-flex',
     name: 'SoundWool Flex',
     sku: 'BLD-SW-5075',
-    category: 'insulation',
+    productType: 'insulation',
     shortDescription: 'Semi-rigid mineral-wool batts for acoustic partition cavities.',
     description:
       'A semi-rigid mineral-wool insulation for internal cavity applications where acoustic discovery is the starting point.',
-    performanceNeeds: ['acoustic'],
+    projectRequirements: ['acoustic'],
     features: ['Friction-fit batt format', 'Semi-rigid mineral wool', 'Sized for internal partition cavities'],
     specifications: [
       { label: 'Thickness', value: '50 mm' },
@@ -108,11 +108,11 @@ export const products: Product[] = [
     id: 'firewool-slab',
     name: 'FireWool Slab',
     sku: 'BLD-FW-6080',
-    category: 'insulation',
+    productType: 'insulation',
     shortDescription: 'Non-combustible insulation for protected voids and enclosures.',
     description:
       'A dense mineral-wool slab for insulation discovery where fire-related use is central to the project requirement.',
-    performanceNeeds: ['fire'],
+    projectRequirements: ['fire'],
     features: ['Rigid slab format', 'Mineral-wool construction', 'For protected internal voids and enclosures'],
     specifications: [
       { label: 'Thickness', value: '60 mm' },
@@ -125,11 +125,11 @@ export const products: Product[] = [
     id: 'thermowool-cavity',
     name: 'ThermoWool Cavity',
     sku: 'BLD-TW-9010',
-    category: 'insulation',
+    productType: 'insulation',
     shortDescription: 'Thermal insulation for internal cavity applications.',
     description:
       'A lightweight mineral-wool batt for general thermal insulation in internal cavities.',
-    performanceNeeds: [],
+    projectRequirements: [],
     features: ['Flexible batt format', 'Easy cavity installation', 'For dry internal applications'],
     specifications: [
       { label: 'Thickness', value: '90 mm' },
@@ -142,11 +142,11 @@ export const products: Product[] = [
     id: 'hydrowool-cavity',
     name: 'HydroWool Cavity',
     sku: 'BLD-HW-8010',
-    category: 'insulation',
+    productType: 'insulation',
     shortDescription: 'Water-repellent insulation for moisture-sensitive interior cavities.',
     description:
       'A water-repellent mineral-wool insulation for moisture-sensitive internal cavity applications.',
-    performanceNeeds: ['moisture'],
+    projectRequirements: ['moisture'],
     features: ['Water-repellent mineral wool', 'Semi-rigid batt format', 'For moisture-sensitive interior cavities'],
     specifications: [
       { label: 'Thickness', value: '80 mm' },
@@ -159,11 +159,11 @@ export const products: Product[] = [
     id: 'securewool-af',
     name: 'SecureWool AF',
     sku: 'BLD-SW-1006',
-    category: 'insulation',
+    productType: 'insulation',
     shortDescription: 'Dense insulation for acoustic and fire-related partition requirements.',
     description:
       'A high-density mineral-wool slab for internal partitions where acoustic and fire-related discovery needs overlap.',
-    performanceNeeds: ['acoustic', 'fire'],
+    projectRequirements: ['acoustic', 'fire'],
     features: ['High-density mineral wool', 'Semi-rigid slab format', 'For internal partition cavities'],
     specifications: [
       { label: 'Thickness', value: '100 mm' },
@@ -176,11 +176,11 @@ export const products: Product[] = [
     id: 'studprofile-cw-75',
     name: 'StudProfile CW 75',
     sku: 'BLD-CW-7506',
-    category: 'profiles',
+    productType: 'profiles',
     shortDescription: 'Vertical metal stud for non-load-bearing partition framing.',
     description:
       'A standard galvanized-steel stud profile for forming vertical members in internal non-load-bearing partitions.',
-    performanceNeeds: [],
+    projectRequirements: [],
     features: ['Galvanized steel', 'C-shaped profile', 'Compatible with 75 mm tracks'],
     specifications: [
       { label: 'Web width', value: '75 mm' },
@@ -193,11 +193,11 @@ export const products: Product[] = [
     id: 'trackprofile-uw-75',
     name: 'TrackProfile UW 75',
     sku: 'BLD-UW-7504',
-    category: 'profiles',
+    productType: 'profiles',
     shortDescription: 'Horizontal track for compatible partition studs.',
     description:
       'A galvanized-steel track profile for floor and ceiling connections in internal partition framing.',
-    performanceNeeds: [],
+    projectRequirements: [],
     features: ['Galvanized steel', 'U-shaped profile', 'Compatible with 75 mm studs'],
     specifications: [
       { label: 'Web width', value: '75 mm' },
@@ -210,11 +210,11 @@ export const products: Product[] = [
     id: 'acoustictrack-75',
     name: 'AcousticTrack 75',
     sku: 'BLD-AT-7504',
-    category: 'profiles',
+    productType: 'profiles',
     shortDescription: 'Resilient-lined track that helps limit perimeter sound transfer.',
     description:
       'A lined track profile for partition perimeters where acoustic product discovery is relevant.',
-    performanceNeeds: ['acoustic'],
+    projectRequirements: ['acoustic'],
     features: ['Factory-applied resilient lining', 'U-shaped galvanized-steel profile', 'Compatible with 75 mm studs'],
     specifications: [
       { label: 'Web width', value: '75 mm' },
@@ -227,11 +227,11 @@ export const products: Product[] = [
     id: 'reinforcedprofile-ua-50',
     name: 'ReinforcedProfile UA 50',
     sku: 'BLD-UA-5004',
-    category: 'profiles',
+    productType: 'profiles',
     shortDescription: 'Reinforced metal profile for door openings and high-load areas.',
     description:
       'A reinforced steel profile for supporting door openings and local high-load areas within internal partitions.',
-    performanceNeeds: [],
+    projectRequirements: [],
     features: ['Reinforced galvanized steel', 'U-shaped profile', 'For door-opening reinforcement'],
     specifications: [
       { label: 'Web width', value: '50 mm' },
@@ -244,11 +244,11 @@ export const products: Product[] = [
     id: 'corrotrack-uw-50',
     name: 'CorroTrack UW 50',
     sku: 'BLD-CT-5004',
-    category: 'profiles',
+    productType: 'profiles',
     shortDescription: 'Coated track profile for humid internal zones.',
     description:
       'A corrosion-protected track profile for internal partition areas where moisture resistance is relevant to product discovery.',
-    performanceNeeds: ['moisture'],
+    projectRequirements: ['moisture'],
     features: ['Enhanced corrosion protection', 'U-shaped steel profile', 'Compatible with 50 mm studs'],
     specifications: [
       { label: 'Web width', value: '50 mm' },
@@ -261,11 +261,11 @@ export const products: Product[] = [
     id: 'jointtape-paper',
     name: 'JointTape Paper',
     sku: 'BLD-JT-5000',
-    category: 'accessories',
+    productType: 'accessories',
     shortDescription: 'Paper tape for reinforcing gypsum-board joints before finishing.',
     description:
       'A paper joint tape for reinforcing tapered gypsum-board joints during standard finishing work.',
-    performanceNeeds: [],
+    projectRequirements: [],
     features: ['Pre-creased paper tape', 'For tapered board joints', 'Suitable for manual finishing'],
     specifications: [
       { label: 'Roll length', value: '50 m' },
@@ -278,11 +278,11 @@ export const products: Product[] = [
     id: 'sealant-firestop',
     name: 'Sealant FireStop',
     sku: 'BLD-FS-310',
-    category: 'accessories',
+    productType: 'accessories',
     shortDescription: 'Intumescent sealant for linear joints in protected linings.',
     description:
       'An intumescent sealant for discovering accessories used in fire-related lining and perimeter-joint work.',
-    performanceNeeds: ['fire'],
+    projectRequirements: ['fire'],
     features: ['Single-component cartridge', 'Intumescent formulation', 'For internal linear joints'],
     specifications: [
       { label: 'Cartridge size', value: '310 ml' },
@@ -295,11 +295,11 @@ export const products: Product[] = [
     id: 'sealant-aquaseal',
     name: 'Sealant AquaSeal',
     sku: 'BLD-AS-310',
-    category: 'accessories',
+    productType: 'accessories',
     shortDescription: 'Flexible sealant for moisture-resistant perimeter and service joints.',
     description:
       'A flexible sealant for finishing perimeter and service joints in moisture-sensitive interior areas.',
-    performanceNeeds: ['moisture'],
+    projectRequirements: ['moisture'],
     features: ['Low-modulus flexible sealant', 'Single-component cartridge', 'For interior perimeter and service joints'],
     specifications: [
       { label: 'Cartridge size', value: '310 ml' },
@@ -312,11 +312,11 @@ export const products: Product[] = [
     id: 'resilientstrip-50',
     name: 'ResilientStrip 50',
     sku: 'BLD-RS-5000',
-    category: 'accessories',
+    productType: 'accessories',
     shortDescription: 'Compressible strip that helps decouple partition edges.',
     description:
       'A resilient strip for partition perimeters where acoustic discovery is relevant to reducing direct contact between components.',
-    performanceNeeds: ['acoustic'],
+    projectRequirements: ['acoustic'],
     features: ['Closed-cell foam', 'Self-adhesive backing', 'For track and perimeter interfaces'],
     specifications: [
       { label: 'Roll length', value: '30 m' },
@@ -329,11 +329,11 @@ export const products: Product[] = [
     id: 'hydrojoint-compound-60',
     name: 'HydroJoint Compound 60',
     sku: 'BLD-HJ-200',
-    category: 'accessories',
+    productType: 'accessories',
     shortDescription: 'Setting joint compound for moisture-resistant boards in humid interiors.',
     description:
       'A setting joint compound for finishing moisture-resistant boards in intermittently humid interior areas.',
-    performanceNeeds: ['moisture'],
+    projectRequirements: ['moisture'],
     features: ['Powder-based setting compound', 'For moisture-resistant board finishing', 'Suitable for hand application'],
     specifications: [
       { label: 'Bag weight', value: '20 kg' },

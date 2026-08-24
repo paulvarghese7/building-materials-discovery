@@ -12,8 +12,8 @@ import {
   type CatalogueCorrection,
 } from '@/lib/catalogue-search';
 import {
-  createSearchIntentHref,
-  getSearchIntent,
+  createSearchRequirementIntentHref,
+  getSearchRequirementIntent,
   parseCatalogueFilters,
   type CatalogueSearchParams,
 } from '@/lib/products';
@@ -46,18 +46,19 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const filters = parseCatalogueFilters(await searchParams);
   const searchResult = searchCatalogue(products, filters);
   const facetCounts = getCatalogueFacetCounts(searchResult, filters);
-  const suggestedNeed = searchResult.mode === 'none' ? getSearchIntent(filters.query) : undefined;
+  const suggestedRequirement =
+    searchResult.mode === 'none' ? getSearchRequirementIntent(filters.query) : undefined;
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-950">
+    <main className="flex-1 bg-slate-50 text-slate-950">
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-          <p className="text-sm font-bold uppercase tracking-[0.16em] text-teal-700">
+          <p className="text-sm font-bold uppercase tracking-[0.16em] text-brand-700">
             BuildMatch catalogue
           </p>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">Products</h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-            Explore fictional building materials by product type and performance need.
+            Explore fictional building materials by product type and project requirement.
           </p>
         </div>
       </header>
@@ -104,10 +105,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               <EmptyState
                 filters={filters}
                 suggestion={
-                  suggestedNeed
+                  suggestedRequirement
                     ? {
-                        need: suggestedNeed,
-                        href: createSearchIntentHref(filters, suggestedNeed),
+                        projectRequirement: suggestedRequirement,
+                        href: createSearchRequirementIntentHref(filters, suggestedRequirement),
                       }
                     : undefined
                 }
