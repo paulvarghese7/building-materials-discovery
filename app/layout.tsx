@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   description: "Discover fictional building materials by product type and performance need.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
