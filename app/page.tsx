@@ -1,8 +1,8 @@
 import Link from 'next/link';
 
+import { SearchInput } from '@/components/SearchInput';
 import { products } from '@/data/products';
 import {
-  MAX_SEARCH_QUERY_LENGTH,
   categoryLabels,
   createCatalogueHref,
   performanceNeedLabels,
@@ -62,33 +62,7 @@ export default function Home() {
                 acoustic, fire, or moisture requirement.
               </p>
 
-              <form
-                action="/products"
-                method="get"
-                role="search"
-                className="mt-9 max-w-2xl rounded-2xl border border-slate-200 bg-slate-50 p-3 shadow-sm sm:flex sm:items-end sm:gap-3"
-              >
-                <div className="min-w-0 flex-1">
-                  <label htmlFor="homepage-product-search" className="block text-sm font-semibold">
-                    Search products
-                  </label>
-                  <input
-                    id="homepage-product-search"
-                    name="q"
-                    type="search"
-                    maxLength={MAX_SEARCH_QUERY_LENGTH}
-                    required
-                    placeholder="Try a product name, SKU, or requirement"
-                    className="mt-2 min-h-12 w-full rounded-lg border border-slate-300 bg-white px-4 text-base text-slate-950 outline-none placeholder:text-slate-500 focus:border-teal-700 focus:ring-2 focus:ring-teal-700/20"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-lg bg-teal-700 px-5 font-semibold text-white hover:bg-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 sm:mt-0 sm:w-auto"
-                >
-                  Search catalogue
-                </button>
-              </form>
+              <SearchInput filters={{ query: '' }} products={products} variant="homepage" />
             </div>
 
             <aside className="rounded-2xl border border-slate-200 bg-slate-50 p-6" aria-label="Catalogue overview">

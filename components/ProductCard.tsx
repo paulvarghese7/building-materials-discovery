@@ -2,14 +2,16 @@ import Link from 'next/link';
 
 import { PerformanceBadge } from '@/components/PerformanceBadge';
 import { categoryLabels } from '@/lib/products';
+import type { CatalogueMatchReason } from '@/lib/catalogue-search';
 import type { Product } from '@/types';
 
 interface ProductCardProps {
+  matchReasons?: readonly CatalogueMatchReason[];
   product: Product;
 }
 
 // Summarises one product while keeping its full technical detail on the dedicated product page.
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ matchReasons = [], product }: ProductCardProps) {
   const headlineSpecification = product.specifications[0];
 
   return (
@@ -25,6 +27,12 @@ export function ProductCard({ product }: ProductCardProps) {
         {product.name}
       </h2>
       <p className="mt-3 text-sm leading-6 text-slate-600">{product.shortDescription}</p>
+
+      {matchReasons.length > 0 && (
+        <p className="mt-3 text-xs font-semibold text-teal-800">
+          Matches: {matchReasons.join(' · ')}
+        </p>
+      )}
 
       {product.performanceNeeds.length > 0 && (
         <div className="mt-5 flex flex-wrap gap-2" aria-label="Performance needs">

@@ -7,9 +7,13 @@ import { ProductGrid } from '@/components/ProductGrid';
 import { SearchInput } from '@/components/SearchInput';
 import { products } from '@/data/products';
 import {
+  getCatalogueFacetCounts,
+  searchCatalogue,
+  type CatalogueCorrection,
+} from '@/lib/catalogue-search';
+import {
   createSearchIntentHref,
-  filterProducts,
-  getSearchIntentSuggestion,
+  getSearchIntent,
   parseCatalogueFilters,
   type CatalogueSearchParams,
 } from '@/lib/products';
@@ -28,11 +32,20 @@ function formatProductCount(count: number): string {
   return `${count} ${count === 1 ? 'product' : 'products'}`;
 }
 
+function formatCorrections(corrections: readonly CatalogueCorrection[]): string {
+  return new Intl.ListFormat('en', { style: 'long', type: 'conjunction' }).format(
+    corrections.map(
+      ({ original, replacement }) => `“${replacement}” for “${original}”`,
+    ),
+  );
+}
+
 // Reads catalogue state from the URL and renders the matching static product collection.
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const filters = parseCatalogueFilters(await searchParams);
-  const filteredProducts = filterProducts(products, filters);
-  const suggestedNeed = getSearchIntentSuggestion(products, filters);
+  const searchResult = searchCatalogue(products, filters);
+  const facetCounts = getCatalogueFacetCounts(searchResult, filters);
+  const suggestedNeed = searchResult.mode === 'none' ? getSearchIntent(filters.query) : undefined;
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
@@ -52,10 +65,20 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8"
         aria-labelledby="product-results-heading"
       >
-        <SearchInput filters={filters} />
+        <SearchInput filters={filters} products={products} />
+
+        {searchResult.mode === 'fuzzy' && (
+          <p
+            className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-950"
+            role="status"
+          >
+            No exact matches for “{filters.query}”. Showing close matches using{' '}
+            {formatCorrections(searchResult.corrections)}.
+          </p>
+        )}
 
         <div className="mt-8 grid items-start gap-8 lg:grid-cols-[15rem_minmax(0,1fr)]">
-          <ProductFilters filters={filters} />
+          <ProductFilters counts={facetCounts} filters={filters} />
 
           <div className="min-w-0">
             <ActiveFilters filters={filters} />
@@ -70,14 +93,15 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 aria-live="polite"
                 aria-atomic="true"
               >
-                {formatProductCount(filteredProducts.length)}
+                {formatProductCount(searchResult.matches.length)}
               </p>
             </div>
 
-            {filteredProducts.length > 0 ? (
-              <ProductGrid products={filteredProducts} />
+            {searchResult.matches.length > 0 ? (
+              <ProductGrid matches={searchResult.matches} />
             ) : (
               <EmptyState
+                filters={filters}
                 suggestion={
                   suggestedNeed
                     ? {

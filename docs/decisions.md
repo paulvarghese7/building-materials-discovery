@@ -100,3 +100,19 @@ export interface Product {
 8. Build `/products/[id]`, including invalid product handling.
 9. Build the homepage as an entry point into the completed discovery flows.
 10. Test responsive behaviour, keyboard navigation, focus states, edge cases, and production build.
+
+## Final guided-search enhancement
+
+**Status:** Approved 24 August 2026
+
+| Decision | Why |
+| --- | --- |
+| Rank catalogue results deterministically by field relevance, match quality, and original dataset order. | Product identity and product names should outrank broad descriptive matches without introducing an opaque external search service. |
+| Require every normalized query token to match. | Multi-word searches stay predictable and do not broaden silently. |
+| Attempt bounded typo recovery only after global exact search returns zero results. | A small correction can recover a useful search without displacing valid exact matches. |
+| Keep the original query in the URL and explain every interpreted token. | Correction remains visible, reversible, and honest rather than silently rewriting user input. |
+| Resolve exact or fuzzy search globally once before applying filters or calculating facet counts. | Results and contextual counts must share one interpretation even when an active filter produces an empty view. |
+| Reuse the same global ranking for product suggestions and catalogue results. | Autocomplete order should never contradict the result page. |
+| Use a manual-selection combobox and retain the native GET form. | Keyboard and assistive-technology behavior takes priority while search remains usable without client JavaScript. |
+| Keep catalogue results server-rendered and add client state only to the shared search control. | This adds responsive URL behavior without converting the catalogue into a large client application. |
+| Standardize local guidance, CI, and deployment metadata on Node 24. | Node 24 is compatible with the installed Next.js release and matches the current supported local runtime. |
