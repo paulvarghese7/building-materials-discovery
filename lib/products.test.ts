@@ -5,6 +5,7 @@ import {
   MAX_SEARCH_QUERY_LENGTH,
   categoryLabels,
   createCatalogueHref,
+  createSearchIntentHref,
   filterProducts,
   getProductById,
   getSearchIntentSuggestion,
@@ -191,5 +192,14 @@ describe('search-intent suggestions', () => {
 
   it('does not suggest an intent for an empty query', () => {
     expect(getSearchIntentSuggestion(products, { query: '' })).toBeUndefined();
+  });
+
+  it('creates an explicit CTA that removes the query, preserves category, and replaces need', () => {
+    expect(
+      createSearchIntentHref(
+        { query: 'noise', category: 'insulation', need: 'fire' },
+        'acoustic',
+      ),
+    ).toBe('/products?category=insulation&need=acoustic');
   });
 });

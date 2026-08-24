@@ -1,12 +1,15 @@
 import type { Metadata } from 'next';
 
 import { ActiveFilters } from '@/components/ActiveFilters';
+import { EmptyState } from '@/components/EmptyState';
 import { ProductFilters } from '@/components/ProductFilters';
 import { ProductGrid } from '@/components/ProductGrid';
 import { SearchInput } from '@/components/SearchInput';
 import { products } from '@/data/products';
 import {
+  createSearchIntentHref,
   filterProducts,
+  getSearchIntentSuggestion,
   parseCatalogueFilters,
   type CatalogueSearchParams,
 } from '@/lib/products';
@@ -29,6 +32,7 @@ function formatProductCount(count: number): string {
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const filters = parseCatalogueFilters(await searchParams);
   const filteredProducts = filterProducts(products, filters);
+  const suggestedNeed = getSearchIntentSuggestion(products, filters);
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
@@ -65,7 +69,20 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               </p>
             </div>
 
-            <ProductGrid products={filteredProducts} />
+            {filteredProducts.length > 0 ? (
+              <ProductGrid products={filteredProducts} />
+            ) : (
+              <EmptyState
+                suggestion={
+                  suggestedNeed
+                    ? {
+                        need: suggestedNeed,
+                        href: createSearchIntentHref(filters, suggestedNeed),
+                      }
+                    : undefined
+                }
+              />
+            )}
           </div>
         </div>
       </section>
