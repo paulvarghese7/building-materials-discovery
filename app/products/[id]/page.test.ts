@@ -1,8 +1,9 @@
+import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 
 import { products } from '@/data/products';
 
-import { generateMetadata, generateStaticParams } from './page';
+import ProductPage, { generateMetadata, generateStaticParams } from './page';
 
 describe('product detail route', () => {
   it('generates one static route for every product', () => {
@@ -24,5 +25,17 @@ describe('product detail route', () => {
     ).resolves.toEqual({
       title: 'Product not found | BuildMatch',
     });
+  });
+
+  it('links category, performance, and similar-product discovery back to the catalogue', async () => {
+    const markup = renderToStaticMarkup(
+      await ProductPage({ params: Promise.resolve({ id: 'quietboard-15' }) }),
+    );
+
+    expect(markup).toContain('aria-label="Browse Boards products"');
+    expect(markup).toContain('href="/products?category=boards"');
+    expect(markup).toContain('aria-label="Browse products for Acoustic Performance"');
+    expect(markup).toContain('href="/products?need=acoustic"');
+    expect(markup).toContain('View similar products in boards');
   });
 });

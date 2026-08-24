@@ -1,9 +1,11 @@
 import Link from 'next/link';
 
 import { SearchSuggestion } from '@/components/SearchSuggestion';
+import { createCatalogueHref, type CatalogueFilters } from '@/lib/products';
 import type { PerformanceNeed } from '@/types';
 
 interface EmptyStateProps {
+  filters: CatalogueFilters;
   suggestion?: {
     href: string;
     need: PerformanceNeed;
@@ -11,7 +13,32 @@ interface EmptyStateProps {
 }
 
 // Replaces an empty grid with recovery actions and an optional explicit intent suggestion.
-export function EmptyState({ suggestion }: EmptyStateProps) {
+export function EmptyState({ filters, suggestion }: EmptyStateProps) {
+  const broadenActions: { href: string; label: string }[] = [];
+
+  if (filters.query) {
+    broadenActions.push({
+      href: createCatalogueHref({ ...filters, query: '' }),
+      label: 'Clear search query',
+    });
+  }
+
+  if (filters.category) {
+    broadenActions.push({
+      href: createCatalogueHref({ ...filters, category: undefined }),
+      label: 'Search all categories',
+    });
+  }
+
+  if (filters.need) {
+    broadenActions.push({
+      href: createCatalogueHref({ ...filters, need: undefined }),
+      label: 'Search all performance needs',
+    });
+  }
+
+  const visibleActions = broadenActions.slice(0, suggestion ? 1 : 2);
+
   return (
     <section
       className="rounded-2xl border border-dashed border-slate-300 bg-white px-5 py-10 text-center sm:px-8 sm:py-12"
@@ -27,13 +54,20 @@ export function EmptyState({ suggestion }: EmptyStateProps) {
 
         {suggestion && <SearchSuggestion href={suggestion.href} need={suggestion.need} />}
 
-        <Link
-          href="/products"
-          scroll={false}
-          className="mt-6 inline-flex min-h-11 items-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 hover:border-slate-400 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
-        >
-          Clear search and filters
-        </Link>
+        {visibleActions.length > 0 && (
+          <nav className="mt-6 flex flex-wrap justify-center gap-3" aria-label="Broaden your search">
+            {visibleActions.map((action) => (
+              <Link
+                key={action.label}
+                href={action.href}
+                scroll={false}
+                className="inline-flex min-h-11 items-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 hover:border-slate-400 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+              >
+                {action.label}
+              </Link>
+            ))}
+          </nav>
+        )}
       </div>
     </section>
   );

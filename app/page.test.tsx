@@ -1,5 +1,12 @@
 import { renderToStaticMarkup } from 'react-dom/server';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+  }),
+}));
 
 import Home from '@/app/page';
 import { performanceNeeds, productCategories } from '@/lib/products';
@@ -11,6 +18,8 @@ describe('homepage discovery links', () => {
     expect(markup).toContain('action="/products"');
     expect(markup).toContain('method="get"');
     expect(markup).toContain('name="q"');
+    expect(markup).toContain('role="combobox"');
+    expect(markup).toContain('aria-autocomplete="list"');
   });
 
   it('links every category into its filtered catalogue view', () => {

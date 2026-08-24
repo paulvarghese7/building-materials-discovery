@@ -8,19 +8,23 @@ import {
   performanceNeeds,
   type CatalogueFilters,
 } from '@/lib/products';
+import type { CatalogueFacetCounts } from '@/lib/catalogue-search';
 import type { PerformanceNeed, ProductCategory } from '@/types';
 
 interface ProductFiltersProps {
+  counts: CatalogueFacetCounts;
   filters: CatalogueFilters;
 }
 
 interface FilterLinkProps {
   active: boolean;
+  count: number;
   href: string;
   label: string;
 }
 
 interface FilterGroupsProps {
+  counts: CatalogueFacetCounts;
   filters: CatalogueFilters;
   idPrefix: string;
 }
@@ -28,7 +32,7 @@ interface FilterGroupsProps {
 const filterLinkClassName =
   'flex min-h-11 items-center rounded-lg border px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700';
 
-function FilterLink({ active, href, label }: FilterLinkProps) {
+function FilterLink({ active, count, href, label }: FilterLinkProps) {
   return (
     <Link
       href={href}
@@ -40,7 +44,13 @@ function FilterLink({ active, href, label }: FilterLinkProps) {
           : 'border-transparent text-slate-700 hover:border-slate-200 hover:bg-slate-50'
       }`}
     >
-      {label}
+      <span className="flex-1">{label}</span>
+      <span
+        className="ml-3 text-xs tabular-nums text-slate-500"
+        aria-label={`${count} ${count === 1 ? 'product' : 'products'}`}
+      >
+        {count}
+      </span>
     </Link>
   );
 }
@@ -53,7 +63,7 @@ function getNeedHref(filters: CatalogueFilters, need?: PerformanceNeed): string 
   return createCatalogueHref({ ...filters, need });
 }
 
-function FilterGroups({ filters, idPrefix }: FilterGroupsProps) {
+function FilterGroups({ counts, filters, idPrefix }: FilterGroupsProps) {
   const categoryHeadingId = `${idPrefix}-category-filter-heading`;
   const performanceHeadingId = `${idPrefix}-performance-filter-heading`;
 
@@ -68,6 +78,7 @@ function FilterGroups({ filters, idPrefix }: FilterGroupsProps) {
             <li>
               <FilterLink
                 active={!filters.category}
+                count={counts.allCategories}
                 href={getCategoryHref(filters)}
                 label="All categories"
               />
@@ -76,6 +87,7 @@ function FilterGroups({ filters, idPrefix }: FilterGroupsProps) {
               <li key={category}>
                 <FilterLink
                   active={filters.category === category}
+                  count={counts.categories[category]}
                   href={getCategoryHref(filters, category)}
                   label={categoryLabels[category]}
                 />
@@ -94,6 +106,7 @@ function FilterGroups({ filters, idPrefix }: FilterGroupsProps) {
             <li>
               <FilterLink
                 active={!filters.need}
+                count={counts.allPerformanceNeeds}
                 href={getNeedHref(filters)}
                 label="All performance needs"
               />
@@ -102,6 +115,7 @@ function FilterGroups({ filters, idPrefix }: FilterGroupsProps) {
               <li key={need}>
                 <FilterLink
                   active={filters.need === need}
+                  count={counts.performanceNeeds[need]}
                   href={getNeedHref(filters, need)}
                   label={performanceNeedLabels[need]}
                 />
@@ -115,7 +129,7 @@ function FilterGroups({ filters, idPrefix }: FilterGroupsProps) {
 }
 
 // Uses a native disclosure on small screens and a persistent sidebar when space allows.
-export function ProductFilters({ filters }: ProductFiltersProps) {
+export function ProductFilters({ counts, filters }: ProductFiltersProps) {
   const activeFilterCount = Number(Boolean(filters.category)) + Number(Boolean(filters.need));
   const activeFilterLabel = `${activeFilterCount} active ${activeFilterCount === 1 ? 'filter' : 'filters'}`;
 
@@ -139,7 +153,7 @@ export function ProductFilters({ filters }: ProductFiltersProps) {
           </span>
         </summary>
         <div className="border-t border-slate-200 p-4 sm:p-5">
-          <FilterGroups filters={filters} idPrefix="mobile" />
+          <FilterGroups counts={counts} filters={filters} idPrefix="mobile" />
         </div>
       </details>
 
@@ -147,7 +161,7 @@ export function ProductFilters({ filters }: ProductFiltersProps) {
         className="hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm lg:block"
         aria-label="Product filters"
       >
-        <FilterGroups filters={filters} idPrefix="desktop" />
+        <FilterGroups counts={counts} filters={filters} idPrefix="desktop" />
       </aside>
     </>
   );

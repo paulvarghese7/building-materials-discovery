@@ -79,9 +79,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
             <div className="mt-8 grid items-end gap-8 lg:grid-cols-[minmax(0,1fr)_auto]">
               <div>
-                <p className="text-sm font-bold uppercase tracking-[0.16em] text-teal-700">
+                <Link
+                  href={createCatalogueHref({ query: '', category: product.category })}
+                  className="inline-flex min-h-11 items-center rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-sm font-bold uppercase tracking-[0.12em] text-teal-800 hover:border-teal-300 hover:bg-teal-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
+                  aria-label={`Browse ${categoryLabel} products`}
+                >
                   {categoryLabel}
-                </p>
+                </Link>
                 <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
                   {product.name}
                 </h1>
@@ -175,7 +179,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               href={createCatalogueHref({ query: '', category: product.category })}
               className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-md font-semibold text-teal-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
             >
-              Browse all {categoryLabel.toLowerCase()}
+              View similar products in {categoryLabel.toLowerCase()}
               <span aria-hidden="true">→</span>
             </Link>
           </section>
