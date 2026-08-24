@@ -59,13 +59,13 @@ Use a deliberately constrained product taxonomy with enough depth to make browsi
 - **Profiles**
 - **Accessories**
 
-BuildMatch will use **20 fictional demonstration products** distributed across these categories.
+BuildMatch will use **20 fictional demonstration products** distributed across these product types.
 
-The reduced taxonomy is a scope decision, not a claim that these are the only important building-material categories.
+The reduced taxonomy is a scope decision, not a claim that these are the only important building-material product types.
 
 ---
 
-## 5. Product Category Terminology
+## 5. Product Type Terminology
 
 ### Observation
 
@@ -82,18 +82,18 @@ Rigips likewise uses **"Profiltechnik und Zubehör"** in its product taxonomy.
 Use the following type:
 
 ```ts
-export type ProductCategory =
+export type ProductType =
   | 'boards'
   | 'insulation'
   | 'profiles'
   | 'accessories';
 ```
 
-The UI label for the category is **Profiles**.
+The UI label for the product type is **Profiles**.
 
 ---
 
-## 6. Application Context vs. Performance Need
+## 6. Application Context vs. Project Requirement
 
 ### Observation
 
@@ -127,10 +127,10 @@ For BuildMatch, modelling those values as "applications" would conflate two dist
 
 ### BuildMatch decision
 
-Use **performance need** as the product-model concept:
+Use **project requirement** as the product-model concept:
 
 ```ts
-export type PerformanceNeed =
+export type ProjectRequirement =
   | 'acoustic'
   | 'fire'
   | 'moisture';
@@ -139,7 +139,7 @@ export type PerformanceNeed =
 Products expose:
 
 ```ts
-performanceNeeds: PerformanceNeed[];
+projectRequirements: ProjectRequirement[];
 ```
 
 The corresponding UI labels are:
@@ -148,7 +148,7 @@ The corresponding UI labels are:
 - **Fire Resistance**
 - **Moisture Resistance**
 
-A product with no explicitly modelled performance need uses an empty array. An empty array means only that no specific performance need has been assigned in the prototype data; it is not a separate classification.
+A product with no explicitly modelled project requirement uses an empty array. An empty array means only that no specific project requirement has been assigned in the prototype data; it is not a separate classification.
 
 ---
 
@@ -158,9 +158,9 @@ A product with no explicitly modelled performance need uses an empty array. An e
 
 Manufacturer sites support more than one way of reaching a relevant product.
 
-Direct catalogue search and category browsing support users who already know a product name, product type, or catalogue area.
+Direct catalogue search and product-type browsing support users who already know a product name, product type, or catalogue area.
 
-At the same time, both Knauf and ROCKWOOL organize significant parts of their experiences around project contexts and building-performance needs. ROCKWOOL explicitly presents application-oriented discovery, while Knauf exposes application areas alongside separate capability areas such as fire protection, sound protection, acoustics, and moisture protection.
+At the same time, both Knauf and ROCKWOOL organize significant parts of their experiences around project contexts and building-performance requirements. ROCKWOOL explicitly presents application-oriented discovery, while Knauf exposes application areas alongside separate capability areas such as fire protection, sound protection, acoustics, and moisture protection.
 
 ### Interpretation
 
@@ -170,8 +170,8 @@ A user does not always need to begin with a product name. In a technical domain,
 
 BuildMatch will support two primary discovery modes:
 
-1. **Product-first discovery** — search, browse categories, filter, open product details.
-2. **Performance-need-first discovery** — start from acoustic, fire, or moisture requirements and enter a filtered catalogue view.
+1. **Product-first discovery** — search, browse product types, filter, open product details.
+2. **Requirement-first discovery** — start from acoustic, fire, or moisture requirements and enter a filtered catalogue view.
 
 The prototype will not add a separate application hierarchy in the first version.
 
@@ -191,7 +191,7 @@ This can include a planner/specifier, contractor, or installer. The prototype do
 
 The target user may begin with either:
 
-- a known product or product category; or
+- a known product or product type; or
 - a required performance outcome.
 
 ---
@@ -213,8 +213,8 @@ BuildMatch's 20-product dataset does not justify enterprise-scale filtering. Add
 The product catalogue will expose:
 
 1. **Search**
-2. **Product Category**
-3. **Performance Need**
+2. **Product type**
+3. **Project requirement**
 
 Technical characteristics such as thickness, dimensions, density, thermal properties, or material-specific values remain product-detail information rather than catalogue filters.
 
@@ -222,9 +222,9 @@ Search and filter state will be represented in the URL, for example:
 
 ```text
 /products?q=board
-/products?category=boards
-/products?need=fire
-/products?category=insulation&need=acoustic
+/products?type=boards
+/products?requirement=fire
+/products?type=insulation&requirement=acoustic
 ```
 
 This keeps filtered views shareable, bookmarkable, and compatible with normal browser back/forward navigation.
@@ -241,11 +241,11 @@ BuildMatch search will consider relevant text fields such as:
 
 - product name
 - SKU
-- category
+- product type
 - short description
 - description
 - features
-- performance needs
+- project requirements
 
 ### Requirement-aware suggestion
 
@@ -267,7 +267,7 @@ The suggestion does not silently alter the user's query or automatically apply a
 
 ### Evidence status
 
-The underlying **need-first discovery pattern** is supported by the manufacturer research. The exact keyword-to-performance suggestion mechanism was not identified as a documented manufacturer feature during this investigation.
+The underlying **requirement-first discovery pattern** is supported by the manufacturer research. The exact keyword-to-performance suggestion mechanism was not identified as a documented manufacturer feature during this investigation.
 
 It is therefore treated as a **small BuildMatch design inference**, not an industry-standard feature and not an AI feature.
 
@@ -282,9 +282,9 @@ The catalogue's main job is to help users scan products and decide which items d
 A product card should contain:
 
 - product name
-- category
+- product type
 - short description
-- relevant performance-need tags
+- relevant project-requirement tags
 - optionally, one concise headline specification when it materially helps distinguish the product
 
 Full technical tables should not appear on catalogue cards.
@@ -307,10 +307,10 @@ Each product page will contain:
 
 1. Product name
 2. SKU
-3. Category
+3. Product type
 4. Description
 5. Key features
-6. Performance needs
+6. Project requirements
 7. Technical specifications
 
 The following enterprise functions are intentionally outside the prototype:
@@ -358,7 +358,7 @@ Examples include:
 
 ### Interpretation
 
-A single rigid specification object would either contain many category-specific optional fields or fit some product families poorly.
+A single rigid specification object would either contain many product-type-specific optional fields or fit some product families poorly.
 
 ### BuildMatch decision
 
@@ -482,12 +482,12 @@ The prototype should feel like a modern technical catalogue rather than an e-com
 
 | Observation | Product decision |
 |---|---|
-| Real manufacturer catalogues contain far more products and categories than this prototype requires. | Limit the prototype to four representative categories and 20 products. |
-| Knauf and Rigips categorize drywall metal components as profiles/profile technology. | Use **Profiles** as the catalogue category. |
-| Knauf distinguishes physical application contexts from capabilities such as fire, sound, acoustics, and moisture protection. | Model acoustic/fire/moisture as **performance needs**, not applications. |
+| Real manufacturer catalogues contain far more products and categories than this prototype requires. | Limit the prototype to four representative product types and 20 products. |
+| Knauf and Rigips categorize drywall metal components as profiles/profile technology. | Use **Profiles** as the catalogue product type. |
+| Knauf distinguishes physical application contexts from capabilities such as fire, sound, acoustics, and moisture protection. | Model acoustic/fire/moisture as **project requirements**, not applications. |
 | Performance requirements are specific outcomes rather than a generic classification. | Use `acoustic`, `fire`, and `moisture`; do not create an additional generic performance value. |
-| Manufacturer experiences allow discovery through both direct product navigation and project/requirement-oriented routes. | Support product-first and performance-need-first discovery. |
-| Enterprise catalogues require many facets because of catalogue scale. | Limit BuildMatch filtering to category + performance need + search. |
+| Manufacturer experiences allow discovery through both direct product navigation and project/requirement-oriented routes. | Support product-first and requirement-first discovery. |
+| Enterprise catalogues require many facets because of catalogue scale. | Limit BuildMatch filtering to product type + project requirement + search. |
 | Technical attributes vary substantially by product family. | Keep a flexible `Specification[]` model. |
 | Technical detail is important after a potentially relevant product has been identified. | Keep catalogue cards concise and place full specifications on the detail page. |
 | Real manufacturer ecosystems include BIM, systems, calculators, certification, and other specialist tooling. | Keep those features outside the prototype scope. |
@@ -501,17 +501,17 @@ The prototype should feel like a modern technical catalogue rather than an e-com
 ### Product taxonomy
 
 ```ts
-export type ProductCategory =
+export type ProductType =
   | 'boards'
   | 'insulation'
   | 'profiles'
   | 'accessories';
 ```
 
-### Performance needs
+### Project requirements
 
 ```ts
-export type PerformanceNeed =
+export type ProjectRequirement =
   | 'acoustic'
   | 'fire'
   | 'moisture';
@@ -529,10 +529,10 @@ export interface Product {
   id: string;
   name: string;
   sku: string;
-  category: ProductCategory;
+  productType: ProductType;
   shortDescription: string;
   description: string;
-  performanceNeeds: PerformanceNeed[];
+  projectRequirements: ProjectRequirement[];
   features: string[];
   specifications: Specification[];
 }
@@ -548,8 +548,8 @@ export interface Product {
 ### Catalogue
 
 - free-text search
-- category filter
-- performance-need filter
+- product-type filter
+- project-requirement filter
 - URL-driven state
 - result count
 - active-filter display
@@ -560,10 +560,10 @@ export interface Product {
 
 - name
 - SKU
-- category
+- product type
 - description
 - features
-- performance needs
+- project requirements
 - technical specifications
 
 ### Explicit non-goals for the first version

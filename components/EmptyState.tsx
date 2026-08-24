@@ -2,13 +2,13 @@ import Link from 'next/link';
 
 import { SearchSuggestion } from '@/components/SearchSuggestion';
 import { createCatalogueHref, type CatalogueFilters } from '@/lib/products';
-import type { PerformanceNeed } from '@/types';
+import type { ProjectRequirement } from '@/types';
 
 interface EmptyStateProps {
   filters: CatalogueFilters;
   suggestion?: {
     href: string;
-    need: PerformanceNeed;
+    projectRequirement: ProjectRequirement;
   };
 }
 
@@ -24,17 +24,17 @@ export function EmptyState({ filters, suggestion }: EmptyStateProps) {
     });
   }
 
-  if (filters.category) {
+  if (filters.productType) {
     broadenActions.push({
-      href: createCatalogueHref({ ...filters, category: undefined }),
-      label: 'Search all categories',
+      href: createCatalogueHref({ ...filters, productType: undefined }),
+      label: 'Search all product types',
     });
   }
 
-  if (filters.need) {
+  if (filters.projectRequirement) {
     broadenActions.push({
-      href: createCatalogueHref({ ...filters, need: undefined }),
-      label: 'Search all performance needs',
+      href: createCatalogueHref({ ...filters, projectRequirement: undefined }),
+      label: 'Search all requirements',
     });
   }
 
@@ -54,7 +54,12 @@ export function EmptyState({ filters, suggestion }: EmptyStateProps) {
           Try removing a search term or filter to broaden the catalogue results.
         </p>
 
-        {suggestion && <SearchSuggestion href={suggestion.href} need={suggestion.need} />}
+        {suggestion && (
+          <SearchSuggestion
+            href={suggestion.href}
+            projectRequirement={suggestion.projectRequirement}
+          />
+        )}
 
         {visibleActions.length > 0 && (
           <nav className="mt-6 flex flex-wrap justify-center gap-3" aria-label="Broaden your search">
@@ -63,7 +68,7 @@ export function EmptyState({ filters, suggestion }: EmptyStateProps) {
                 key={action.label}
                 href={action.href}
                 scroll={false}
-                className="inline-flex min-h-11 items-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 hover:border-slate-400 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                className="inline-flex min-h-11 items-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 hover:border-slate-400 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700"
               >
                 {action.label}
               </Link>

@@ -2,14 +2,14 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { PerformanceBadge } from '@/components/PerformanceBadge';
+import { ProjectRequirementBadge } from '@/components/ProjectRequirementBadge';
 import { ProductSpecifications } from '@/components/ProductSpecifications';
 import { products } from '@/data/products';
 import {
-  categoryLabels,
+  productTypeLabels,
   createCatalogueHref,
   getProductById,
-  performanceNeedLabels,
+  projectRequirementLabels,
 } from '@/lib/products';
 
 interface ProductPageProps {
@@ -47,10 +47,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound();
   }
 
-  const categoryLabel = categoryLabels[product.category];
+  const productTypeLabel = productTypeLabels[product.productType];
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-950">
+    <main className="flex-1 bg-slate-50 text-slate-950">
       <article>
         <header className="border-b border-slate-200 bg-white">
           <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
@@ -59,7 +59,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <li>
                   <Link
                     href="/products"
-                    className="inline-flex min-h-11 items-center rounded font-semibold text-teal-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                    className="inline-flex min-h-11 items-center rounded-md px-2 font-semibold text-brand-800 transition-colors hover:bg-brand-50 hover:text-brand-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700"
                   >
                     Products
                   </Link>
@@ -67,10 +67,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <li aria-hidden="true">/</li>
                 <li>
                   <Link
-                    href={createCatalogueHref({ query: '', category: product.category })}
-                    className="inline-flex min-h-11 items-center rounded font-semibold text-teal-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                    href={createCatalogueHref({ query: '', productType: product.productType })}
+                    className="inline-flex min-h-11 items-center rounded-md px-2 font-semibold text-brand-800 transition-colors hover:bg-brand-50 hover:text-brand-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700"
                   >
-                    {categoryLabel}
+                    {productTypeLabel}
                   </Link>
                 </li>
                 <li aria-hidden="true">/</li>
@@ -83,11 +83,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <div className="mt-8 grid items-end gap-8 lg:grid-cols-[minmax(0,1fr)_auto]">
               <div>
                 <Link
-                  href={createCatalogueHref({ query: '', category: product.category })}
-                  className="inline-flex min-h-11 items-center rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-sm font-bold uppercase tracking-[0.12em] text-teal-800 hover:border-teal-300 hover:bg-teal-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
-                  aria-label={`Browse ${categoryLabel} products`}
+                  href={createCatalogueHref({ query: '', productType: product.productType })}
+                  className="inline-flex min-h-11 items-center rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-sm font-bold uppercase tracking-[0.12em] text-brand-800 hover:border-brand-300 hover:bg-brand-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-700"
+                  aria-label={`Browse ${productTypeLabel} products`}
                 >
-                  {categoryLabel}
+                  {productTypeLabel}
                 </Link>
                 <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
                   {product.name}
@@ -111,26 +111,26 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
         <div className="mx-auto grid max-w-6xl gap-10 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.7fr)] lg:gap-16 lg:px-8">
           <div className="space-y-10">
-            <section aria-labelledby="performance-heading">
-              <h2 id="performance-heading" className="text-2xl font-semibold tracking-tight">
-                Performance needs
+            <section aria-labelledby="project-requirements-heading">
+              <h2 id="project-requirements-heading" className="text-2xl font-semibold tracking-tight">
+                Project requirements
               </h2>
-              {product.performanceNeeds.length > 0 ? (
+              {product.projectRequirements.length > 0 ? (
                 <div className="mt-4 flex flex-wrap gap-3">
-                  {product.performanceNeeds.map((need) => (
+                  {product.projectRequirements.map((projectRequirement) => (
                     <Link
-                      key={need}
-                      href={createCatalogueHref({ query: '', need })}
-                      aria-label={`Browse products for ${performanceNeedLabels[need]}`}
-                      className="inline-flex min-h-11 items-center rounded-full hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
+                      key={projectRequirement}
+                      href={createCatalogueHref({ query: '', projectRequirement })}
+                      aria-label={`Browse products for ${projectRequirementLabels[projectRequirement]}`}
+                      className="inline-flex min-h-11 items-center rounded-full hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-700"
                     >
-                      <PerformanceBadge need={need} />
+                      <ProjectRequirementBadge projectRequirement={projectRequirement} />
                     </Link>
                   ))}
                 </div>
               ) : (
                 <p className="mt-4 leading-7 text-slate-600">
-                  This general-purpose product is not assigned to a specific performance filter.
+                  This general-purpose product is not assigned to a specific project requirement.
                 </p>
               )}
             </section>
@@ -145,7 +145,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                     key={feature}
                     className="flex gap-3 rounded-xl border border-slate-200 bg-white p-4 leading-6 text-slate-700 shadow-sm"
                   >
-                    <span className="mt-2 size-2 shrink-0 rounded-full bg-teal-600" aria-hidden="true" />
+                    <span className="mt-2 size-2 shrink-0 rounded-full bg-brand-600" aria-hidden="true" />
                     <span>{feature}</span>
                   </li>
                 ))}
@@ -164,7 +164,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
           <section aria-labelledby="specifications-heading">
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-              <p className="text-sm font-bold uppercase tracking-[0.14em] text-teal-700">
+              <p className="text-sm font-bold uppercase tracking-[0.14em] text-brand-700">
                 Technical data
               </p>
               <h2
@@ -179,10 +179,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
 
             <Link
-              href={createCatalogueHref({ query: '', category: product.category })}
-              className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-md font-semibold text-teal-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
+              href={createCatalogueHref({ query: '', productType: product.productType })}
+              className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-md px-2 font-semibold text-brand-800 transition-colors hover:bg-brand-50 hover:text-brand-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-700"
             >
-              View similar products in {categoryLabel.toLowerCase()}
+              View similar products in {productTypeLabel.toLowerCase()}
               <span aria-hidden="true">→</span>
             </Link>
           </section>

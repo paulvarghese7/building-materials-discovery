@@ -1,9 +1,9 @@
 import Link from 'next/link';
 
 import {
-  categoryLabels,
+  productTypeLabels,
   createCatalogueHref,
-  performanceNeedLabels,
+  projectRequirementLabels,
   type CatalogueFilters,
 } from '@/lib/products';
 
@@ -23,7 +23,7 @@ function ActiveFilterLink({ href, label, removeLabel }: ActiveFilterLinkProps) {
       href={href}
       scroll={false}
       aria-label={removeLabel}
-      className="inline-flex min-h-11 max-w-full items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 text-sm font-medium text-teal-900 hover:border-teal-300 hover:bg-teal-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+      className="inline-flex min-h-11 max-w-full items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1.5 text-sm font-medium text-brand-900 hover:border-brand-300 hover:bg-brand-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700"
     >
       <span className="truncate">{label}</span>
       <span aria-hidden="true">×</span>
@@ -33,7 +33,9 @@ function ActiveFilterLink({ href, label, removeLabel }: ActiveFilterLinkProps) {
 
 // Makes every active catalogue value visible and independently removable.
 export function ActiveFilters({ filters }: ActiveFiltersProps) {
-  const hasActiveFilters = Boolean(filters.query || filters.category || filters.need);
+  const hasActiveFilters = Boolean(
+    filters.query || filters.productType || filters.projectRequirement,
+  );
 
   if (!hasActiveFilters) {
     return null;
@@ -51,7 +53,7 @@ export function ActiveFilters({ filters }: ActiveFiltersProps) {
         <Link
           href="/products"
           scroll={false}
-          className="inline-flex min-h-11 items-center rounded px-1 text-sm font-semibold text-teal-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+          className="inline-flex min-h-11 items-center rounded-md px-2 text-sm font-semibold text-brand-800 transition-colors hover:bg-brand-50 hover:text-brand-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700"
         >
           Clear all
         </Link>
@@ -65,18 +67,18 @@ export function ActiveFilters({ filters }: ActiveFiltersProps) {
             removeLabel={`Remove search query ${filters.query}`}
           />
         )}
-        {filters.category && (
+        {filters.productType && (
           <ActiveFilterLink
-            href={createCatalogueHref({ ...filters, category: undefined })}
-            label={categoryLabels[filters.category]}
-            removeLabel={`Remove category filter ${categoryLabels[filters.category]}`}
+            href={createCatalogueHref({ ...filters, productType: undefined })}
+            label={productTypeLabels[filters.productType]}
+            removeLabel={`Remove product type filter ${productTypeLabels[filters.productType]}`}
           />
         )}
-        {filters.need && (
+        {filters.projectRequirement && (
           <ActiveFilterLink
-            href={createCatalogueHref({ ...filters, need: undefined })}
-            label={performanceNeedLabels[filters.need]}
-            removeLabel={`Remove performance filter ${performanceNeedLabels[filters.need]}`}
+            href={createCatalogueHref({ ...filters, projectRequirement: undefined })}
+            label={projectRequirementLabels[filters.projectRequirement]}
+            removeLabel={`Remove project requirement filter ${projectRequirementLabels[filters.projectRequirement]}`}
           />
         )}
       </div>

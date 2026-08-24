@@ -1,25 +1,25 @@
 import { products } from '@/data/products';
-import type { PerformanceNeed, Product, ProductCategory } from '@/types';
+import type { ProjectRequirement, Product, ProductType } from '@/types';
 
 export const MAX_SEARCH_QUERY_LENGTH = 100;
 
-export const productCategories: readonly ProductCategory[] = [
+export const productTypes: readonly ProductType[] = [
   'boards',
   'insulation',
   'profiles',
   'accessories',
 ];
 
-export const performanceNeeds: readonly PerformanceNeed[] = ['acoustic', 'fire', 'moisture'];
+export const projectRequirements: readonly ProjectRequirement[] = ['acoustic', 'fire', 'moisture'];
 
-export const categoryLabels: Record<ProductCategory, string> = {
+export const productTypeLabels: Record<ProductType, string> = {
   boards: 'Boards',
   insulation: 'Insulation',
   profiles: 'Profiles',
   accessories: 'Accessories',
 };
 
-export const performanceNeedLabels: Record<PerformanceNeed, string> = {
+export const projectRequirementLabels: Record<ProjectRequirement, string> = {
   acoustic: 'Acoustic Performance',
   fire: 'Fire Resistance',
   moisture: 'Moisture Resistance',
@@ -27,14 +27,14 @@ export const performanceNeedLabels: Record<PerformanceNeed, string> = {
 
 export interface CatalogueFilters {
   query: string;
-  category?: ProductCategory;
-  need?: PerformanceNeed;
+  productType?: ProductType;
+  projectRequirement?: ProjectRequirement;
 }
 
 export type CatalogueSearchParams = Record<string, string | string[] | undefined>;
 
 // These are a small, deterministic fallback for plain-language searches—not an AI recommendation system.
-const searchIntentKeywords: Record<PerformanceNeed, readonly string[]> = {
+const searchRequirementIntentKeywords: Record<ProjectRequirement, readonly string[]> = {
   acoustic: ['acoustic', 'noise', 'quiet', 'sound'],
   fire: ['fire', 'flame', 'heat'],
   moisture: ['bathroom', 'damp', 'moisture', 'water', 'wet'],
@@ -62,14 +62,14 @@ function getSearchTokens(query: string): string[] {
   return normalisedQuery ? normalisedQuery.split(' ') : [];
 }
 
-// Checks whether a URL value is one of the categories supported by this catalogue.
-function isProductCategory(value: string | undefined): value is ProductCategory {
-  return value !== undefined && productCategories.includes(value as ProductCategory);
+// Checks whether a URL value is one of the product types supported by this catalogue.
+function isProductType(value: string | undefined): value is ProductType {
+  return value !== undefined && productTypes.includes(value as ProductType);
 }
 
-// Checks whether a URL value is one of the performance needs supported by this catalogue.
-function isPerformanceNeed(value: string | undefined): value is PerformanceNeed {
-  return value !== undefined && performanceNeeds.includes(value as PerformanceNeed);
+// Checks whether a URL value is one of the project requirements supported by this catalogue.
+function isProjectRequirement(value: string | undefined): value is ProjectRequirement {
+  return value !== undefined && projectRequirements.includes(value as ProjectRequirement);
 }
 
 // Builds one normalized search document from the product fields approved for discovery.
@@ -78,13 +78,15 @@ function getProductSearchText(product: Product): string {
     [
       product.name,
       product.sku,
-      product.category,
-      categoryLabels[product.category],
+      product.productType,
+      productTypeLabels[product.productType],
       product.shortDescription,
       product.description,
       ...product.features,
-      ...product.performanceNeeds,
-      ...product.performanceNeeds.map((need) => performanceNeedLabels[need]),
+      ...product.projectRequirements,
+      ...product.projectRequirements.map(
+        (projectRequirement) => projectRequirementLabels[projectRequirement],
+      ),
     ].join(' '),
   );
 }
@@ -92,14 +94,26 @@ function getProductSearchText(product: Product): string {
 // Reads the catalogue URL contract and safely drops unsupported filter values.
 export function parseCatalogueFilters(searchParams: CatalogueSearchParams): CatalogueFilters {
   const query = cleanQuery(getFirstValue(searchParams.q) ?? '');
-  const category = getFirstValue(searchParams.category);
-  const need = getFirstValue(searchParams.need);
+  const canonicalProductType = getFirstValue(searchParams.type);
+  const legacyProductType = getFirstValue(searchParams.category);
+  const canonicalProjectRequirement = getFirstValue(searchParams.requirement);
+  const legacyProjectRequirement = getFirstValue(searchParams.need);
+  const productType = isProductType(canonicalProductType)
+    ? canonicalProductType
+    : isProductType(legacyProductType)
+      ? legacyProductType
+      : undefined;
+  const projectRequirement = isProjectRequirement(canonicalProjectRequirement)
+    ? canonicalProjectRequirement
+    : isProjectRequirement(legacyProjectRequirement)
+      ? legacyProjectRequirement
+      : undefined;
 
-  // Ignore unknown URL values so a shared or manually edited link remains usable.
+  // Prefer canonical parameters while retaining simple compatibility with previously shared URLs.
   return {
     query,
-    ...(isProductCategory(category) ? { category } : {}),
-    ...(isPerformanceNeed(need) ? { need } : {}),
+    ...(productType ? { productType } : {}),
+    ...(projectRequirement ? { projectRequirement } : {}),
   };
 }
 
@@ -111,12 +125,12 @@ export function createCatalogueHref(filters: CatalogueFilters): string {
     searchParams.set('q', cleanQuery(filters.query));
   }
 
-  if (filters.category) {
-    searchParams.set('category', filters.category);
+  if (filters.productType) {
+    searchParams.set('type', filters.productType);
   }
 
-  if (filters.need) {
-    searchParams.set('need', filters.need);
+  if (filters.projectRequirement) {
+    searchParams.set('requirement', filters.projectRequirement);
   }
 
   const queryString = searchParams.toString();
@@ -125,14 +139,14 @@ export function createCatalogueHref(filters: CatalogueFilters): string {
 }
 
 // Builds the explicit CTA target for accepting a deterministic search-intent suggestion.
-export function createSearchIntentHref(
+export function createSearchRequirementIntentHref(
   filters: CatalogueFilters,
-  suggestedNeed: PerformanceNeed,
+  suggestedRequirement: ProjectRequirement,
 ): string {
   return createCatalogueHref({
     query: '',
-    ...(filters.category ? { category: filters.category } : {}),
-    need: suggestedNeed,
+    ...(filters.productType ? { productType: filters.productType } : {}),
+    projectRequirement: suggestedRequirement,
   });
 }
 
@@ -154,36 +168,37 @@ export function searchProducts(sourceProducts: readonly Product[], query: string
   return sourceProducts.filter((product) => matchesProductSearch(product, query));
 }
 
-// Applies the active search, category, and performance filters to a product collection.
+// Applies the active search, product-type, and project-requirement filters to a collection.
 export function filterProducts(
   sourceProducts: readonly Product[],
   filters: CatalogueFilters,
 ): Product[] {
   return searchProducts(sourceProducts, filters.query).filter(
     (product) =>
-      (!filters.category || product.category === filters.category) &&
-      (!filters.need || product.performanceNeeds.includes(filters.need)),
+      (!filters.productType || product.productType === filters.productType) &&
+      (!filters.projectRequirement ||
+        product.projectRequirements.includes(filters.projectRequirement)),
   );
 }
 
-// Recognises a supported performance need from common plain-language search terms.
-export function getSearchIntent(query: string): PerformanceNeed | undefined {
+// Recognises a supported project requirement from common plain-language search terms.
+export function getSearchRequirementIntent(query: string): ProjectRequirement | undefined {
   const words = getSearchTokens(query);
 
-  return performanceNeeds.find((need) =>
-    searchIntentKeywords[need].some((keyword) => words.includes(keyword)),
+  return projectRequirements.find((projectRequirement) =>
+    searchRequirementIntentKeywords[projectRequirement].some((keyword) => words.includes(keyword)),
   );
 }
 
-// Suggests a performance need only when the user's direct search has no matching products.
-export function getSearchIntentSuggestion(
+// Suggests a project requirement only when the user's direct search has no matching products.
+export function getSearchRequirementIntentSuggestion(
   sourceProducts: readonly Product[],
   filters: CatalogueFilters,
-): PerformanceNeed | undefined {
+): ProjectRequirement | undefined {
   // A suggestion appears only after a zero-result direct search. The UI must still require a user action.
   if (!filters.query || filterProducts(sourceProducts, filters).length > 0) {
     return undefined;
   }
 
-  return getSearchIntent(filters.query);
+  return getSearchRequirementIntent(filters.query);
 }

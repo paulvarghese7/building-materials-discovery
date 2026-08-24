@@ -10,31 +10,31 @@ This document records the initial v1 product decisions derived from the investig
 
 | Decision | Why |
 | --- | --- |
-| Use four categories: **Boards**, **Insulation**, **Profiles**, and **Accessories**. | They provide representative building-material families while keeping a 20-product prototype deep enough to browse. |
+| Use four product types: **Boards**, **Insulation**, **Profiles**, and **Accessories**. | They provide representative building-material families while keeping a 20-product prototype deep enough to browse. |
 | Use 20 fictional products. | This is enough data to exercise search, filters, product pages, active filters, and empty states without pretending to be a full manufacturer catalogue. |
-| Use three performance needs: **acoustic**, **fire**, and **moisture**. | These represent desired performance outcomes rather than physical installation contexts. |
-| Permit zero, one, or more performance needs per product. | This allows both untagged products and genuine multi-performance results. An empty array means that no specific performance need is modeled for that product; it does not represent a separate "general" classification. |
+| Use three project requirements: **acoustic**, **fire**, and **moisture**. | These represent desired project outcomes rather than physical installation contexts. |
+| Permit zero, one, or more project requirements per product. | This allows both untagged products and genuine multi-requirement results. An empty array means that no specific project requirement is modeled for that product; it does not represent a separate "general" classification. |
 
 ## Discovery and state
 
 | Decision | Why |
 | --- | --- |
-| The only catalogue filters are category and performance need. | A 20-product dataset does not benefit from enterprise-scale technical facets. |
+| The only catalogue filters are product type and project requirement. | A 20-product dataset does not benefit from enterprise-scale technical facets. |
 | Provide free-text search in addition to filters. | Users may start with a product identity, SKU, product type, or ordinary requirement language. |
-| Search across product name, SKU, category, `shortDescription`, `description`, features, and performance needs. | These fields provide useful discovery without searching arbitrary technical specification values. |
+| Search across product name, SKU, product type, `shortDescription`, `description`, features, and project requirements. | These fields provide useful discovery without searching arbitrary technical specification values. |
 | Keep search and filter state in the URL. | Views are shareable and bookmarkable, and browser history works naturally. |
-| Use `q`, `category`, and `need` as the catalogue query parameters. | A small explicit URL contract keeps routing and filtering predictable. |
+| Use `q`, `type`, and `requirement` as the canonical catalogue query parameters while accepting legacy `category` and `need` aliases. | A consistent URL vocabulary keeps new links clear without breaking previously shared views. |
 | Ignore unsupported filter values rather than allowing them to break the catalogue. | Invalid URLs should degrade safely to a usable catalogue state. |
-| Offer a deterministic search-intent suggestion for recognised requirement language when direct search returns zero results. | It supports need-first discovery without silently changing a search or presenting the feature as AI. |
-| A search-intent suggestion must require explicit user action before applying a performance filter. | The system should never reinterpret or mutate the user's search silently. |
+| Offer a deterministic search-intent suggestion for recognised requirement language when direct search returns zero results. | It supports requirement-first discovery without silently changing a search or presenting the feature as AI. |
+| A search-intent suggestion must require explicit user action before applying a project-requirement filter. | The system should never reinterpret or mutate the user's search silently. |
 
 Example URLs:
 
 ```text
 /products?q=board
-/products?category=boards
-/products?need=fire
-/products?q=insulation&need=acoustic
+/products?type=boards
+/products?requirement=fire
+/products?q=insulation&requirement=acoustic
 ```
 
 ## Data and scope
@@ -52,7 +52,7 @@ Example URLs:
 | Decision | Why |
 | --- | --- |
 | Each valid product has a dedicated `/products/[id]` page. | Detailed product information is a core assignment requirement. |
-| Product details show name, SKU, category, description, features, performance needs, and specifications. | This provides technical depth without introducing enterprise documentation or configuration features. |
+| Product details show name, SKU, product type, description, features, project requirements, and specifications. | This provides technical depth without introducing enterprise documentation or configuration features. |
 | Unknown product IDs use the application's not-found experience. | Invalid product URLs should fail clearly and predictably. |
 
 ## Model contract
@@ -60,13 +60,13 @@ Example URLs:
 The following model is locked for v1. Product-specific technical data stays flexible through `Specification[]`.
 
 ```ts
-export type ProductCategory =
+export type ProductType =
   | 'boards'
   | 'insulation'
   | 'profiles'
   | 'accessories';
 
-export type PerformanceNeed =
+export type ProjectRequirement =
   | 'acoustic'
   | 'fire'
   | 'moisture';
@@ -80,10 +80,10 @@ export interface Product {
   id: string;
   name: string;
   sku: string;
-  category: ProductCategory;
+  productType: ProductType;
   shortDescription: string;
   description: string;
-  performanceNeeds: PerformanceNeed[];
+  projectRequirements: ProjectRequirement[];
   features: string[];
   specifications: Specification[];
 }
@@ -97,7 +97,7 @@ The initial product was completed in the following sequence:
 2. Populate `data/products.ts` from the approved [product matrix](./product-matrix.md).
 3. Add product lookup, filtering, and search utilities.
 4. Build the `/products` catalogue grid.
-5. Add search and category/performance filters.
+5. Add search, product-type, and project-requirement filters.
 6. Add URL state, active-filter controls, clear-all behaviour, and invalid-query handling.
 7. Add empty states and the deterministic search-intent suggestion.
 8. Build `/products/[id]`, including invalid product handling.
@@ -126,7 +126,7 @@ The initial product was completed in the following sequence:
 
 | Decision | Why |
 | --- | --- |
-| Make the prominent category and performance tags on product details link to their filtered catalogue views. | Product metadata becomes a direct continuation of discovery without introducing another navigation model. |
-| Define “similar products” as products in the same category. | A transparent category link is useful for a 20-product catalogue and avoids implying a recommendation algorithm. |
+| Make the prominent product-type and project-requirement tags on product details link to their filtered catalogue views. | Product metadata becomes a direct continuation of discovery without introducing another navigation model. |
+| Define “similar products” as products of the same type. | A transparent product-type link is useful for a 20-product catalogue and avoids implying a recommendation algorithm. |
 | Show at most two targeted broaden-search actions in empty states. | Removing one constraint at a time is more useful than only clearing all state and preserves unrelated valid filters. |
-| Keep the existing active-filter controls and URL contract. | The polish should reuse established navigation rather than add state or duplicate search logic. |
+| Keep the existing active-filter controls and URL-driven state model. | The polish should reuse established navigation rather than add state or duplicate search logic. |

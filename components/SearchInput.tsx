@@ -163,12 +163,16 @@ export function SearchInput({ filters, products, variant = 'catalogue' }: Search
         </label>
         {variant === 'catalogue' && (
           <p id={hintId} className="mt-1 text-sm leading-6 text-slate-600">
-            Search by product name, SKU, product type, or performance need.
+            Search by product name, SKU, product type, or project requirement.
           </p>
         )}
 
-        {filters.category && <input type="hidden" name="category" value={filters.category} />}
-        {filters.need && <input type="hidden" name="need" value={filters.need} />}
+        {filters.productType && (
+          <input type="hidden" name="type" value={filters.productType} />
+        )}
+        {filters.projectRequirement && (
+          <input type="hidden" name="requirement" value={filters.projectRequirement} />
+        )}
 
         <input
           id={inputId}
@@ -192,7 +196,7 @@ export function SearchInput({ filters, products, variant = 'catalogue' }: Search
               ? 'Try a product name, SKU, or requirement'
               : 'Search products, SKUs, or requirements'
           }
-          className={`${variant === 'homepage' ? 'mt-2 min-h-12' : 'mt-3 min-h-11'} w-full rounded-lg border border-slate-300 bg-white px-4 text-base text-slate-950 outline-none placeholder:text-slate-500 focus:border-teal-700 focus:ring-2 focus:ring-teal-700/20`}
+          className={`${variant === 'homepage' ? 'mt-2 min-h-12' : 'mt-3 min-h-11'} w-full rounded-lg border border-slate-300 bg-white px-4 text-base text-slate-950 outline-none placeholder:text-slate-500 focus:border-brand-700 focus:ring-2 focus:ring-brand-700/20`}
           onChange={(event) => {
             const nextValue = event.target.value;
             setInputValue(nextValue);
@@ -228,7 +232,7 @@ export function SearchInput({ filters, products, variant = 'catalogue' }: Search
                 aria-selected={activeIndex === index}
                 className={`flex w-full items-center justify-between gap-4 px-4 py-3 text-left text-sm ${
                   activeIndex === index
-                    ? 'bg-teal-50 text-teal-950'
+                    ? 'bg-brand-50 text-brand-950'
                     : 'text-slate-800 hover:bg-slate-50'
                 }`}
                 onMouseDown={(event) => event.preventDefault()}
@@ -263,7 +267,7 @@ export function SearchInput({ filters, products, variant = 'catalogue' }: Search
 
       <button
         type="submit"
-        className={`${variant === 'homepage' ? 'mt-3 min-h-12 w-full sm:mt-0 sm:w-auto' : 'mt-3 min-h-11 w-full sm:mt-0 sm:w-auto'} inline-flex items-center justify-center rounded-lg bg-teal-800 px-5 py-2 font-semibold text-white transition-colors hover:bg-teal-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700`}
+        className={`${variant === 'homepage' ? 'mt-3 min-h-12 w-full sm:mt-0 sm:w-auto' : 'mt-3 min-h-11 w-full sm:mt-0 sm:w-auto'} inline-flex items-center justify-center rounded-lg bg-brand-800 px-5 py-2 font-semibold text-white transition-colors hover:bg-brand-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700`}
       >
         {variant === 'homepage' ? 'Search catalogue' : 'Search'}
       </button>

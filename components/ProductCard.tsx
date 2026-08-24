@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
-import { PerformanceBadge } from '@/components/PerformanceBadge';
-import { categoryLabels } from '@/lib/products';
+import { ProjectRequirementBadge } from '@/components/ProjectRequirementBadge';
+import { productTypeLabels } from '@/lib/products';
 import type { CatalogueMatchReason } from '@/lib/catalogue-search';
 import type { Product } from '@/types';
 
@@ -17,8 +17,8 @@ export function ProductCard({ matchReasons = [], product }: ProductCardProps) {
   return (
     <article className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-colors hover:border-slate-300 sm:p-6">
       <div className="flex items-start justify-between gap-4">
-        <p className="text-xs font-bold uppercase tracking-[0.14em] text-teal-700">
-          {categoryLabels[product.category]}
+        <p className="text-xs font-bold uppercase tracking-[0.14em] text-brand-700">
+          {productTypeLabels[product.productType]}
         </p>
         <p className="break-all text-right font-mono text-xs text-slate-500">{product.sku}</p>
       </div>
@@ -29,15 +29,18 @@ export function ProductCard({ matchReasons = [], product }: ProductCardProps) {
       <p className="mt-3 text-sm leading-6 text-slate-600">{product.shortDescription}</p>
 
       {matchReasons.length > 0 && (
-        <p className="mt-3 text-xs font-semibold text-teal-800">
+        <p className="mt-3 text-xs font-semibold text-brand-800">
           Matches: {matchReasons.join(' · ')}
         </p>
       )}
 
-      {product.performanceNeeds.length > 0 && (
-        <div className="mt-5 flex flex-wrap gap-2" aria-label="Performance needs">
-          {product.performanceNeeds.map((need) => (
-            <PerformanceBadge key={need} need={need} />
+      {product.projectRequirements.length > 0 && (
+        <div className="mt-5 flex flex-wrap gap-2" aria-label="Project requirements">
+          {product.projectRequirements.map((projectRequirement) => (
+            <ProjectRequirementBadge
+              key={projectRequirement}
+              projectRequirement={projectRequirement}
+            />
           ))}
         </div>
       )}
@@ -51,7 +54,7 @@ export function ProductCard({ matchReasons = [], product }: ProductCardProps) {
 
       <Link
         href={`/products/${product.id}`}
-        className="mt-6 inline-flex min-h-11 items-center gap-2 self-start rounded-md font-semibold text-teal-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
+        className="mt-6 inline-flex min-h-11 items-center gap-2 self-start rounded-md px-2 font-semibold text-brand-800 transition-colors hover:bg-brand-50 hover:text-brand-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-700"
       >
         View product details
         <span className="sr-only"> for {product.name}</span>

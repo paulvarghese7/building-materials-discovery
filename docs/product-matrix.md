@@ -8,7 +8,7 @@ All names, SKUs, purposes, and values below are fictional demonstration content.
 
 ## Coverage at a glance
 
-| Category | Products | Acoustic | Fire | Moisture | No performance need |
+| Product type | Products | Acoustic | Fire | Moisture | No project requirement |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Boards | 5 | 1 | 2 | 2 | 1 |
 | Insulation | 5 | 2 | 2 | 1 | 1 |
@@ -16,11 +16,11 @@ All names, SKUs, purposes, and values below are fictional demonstration content.
 | Accessories | 5 | 1 | 1 | 2 | 1 |
 | **Total product assignments** | **20** | **5** | **5** | **6** | **6** |
 
-The performance columns count products carrying each tag, so multi-performance products appear in more than one column.
+The requirement columns count products carrying each tag, so multi-requirement products appear in more than one column.
 
 ## Product matrix
 
-| # | Product | Proposed SKU | Category | Performance needs | Main purpose | Planned key specs |
+| # | Product | Proposed SKU | Product type | Project requirements | Main purpose | Planned key specs |
 | ---: | --- | --- | --- | --- | --- | --- |
 | 1 | CoreBoard Standard | BLD-CB-1209 | Boards | — | Everyday lining board for internal partitions and ceilings. | Thickness; width; length; board weight |
 | 2 | QuietBoard 15 | BLD-QB-1512 | Boards | Acoustic | Higher-mass board for sound-sensitive internal partitions. | Thickness; density; board weight; width |
@@ -45,23 +45,23 @@ The performance columns count products carrying each tag, so multi-performance p
 
 ## Dataset checks
 
-- Each category has five products, so every category filter returns a substantial set.
-- Each performance need is represented by multiple products across multiple categories.
-- Multi-performance products exist in Boards and Insulation: ShieldBoard FM and SecureWool AF.
-- Untagged products exist in every category: CoreBoard Standard, ThermoWool Cavity, StudProfile CW 75, TrackProfile UW 75, ReinforcedProfile UA 50, and JointTape Paper.
-- Some category/performance combinations intentionally return zero results, including `category=profiles&need=fire`, so contextual counts and broaden-search recovery actions can be exercised.
+- Each product type has five products, so every product-type filter returns a substantial set.
+- Each project requirement is represented by multiple products across multiple product types.
+- Multi-requirement products exist in Boards and Insulation: ShieldBoard FM and SecureWool AF.
+- Untagged products exist in every product type: CoreBoard Standard, ThermoWool Cavity, StudProfile CW 75, TrackProfile UW 75, ReinforcedProfile UA 50, and JointTape Paper.
+- Some type/requirement combinations intentionally return zero results, including `type=profiles&requirement=fire`, so contextual counts and broaden-search recovery actions can be exercised.
 - Specification labels intentionally vary by product family; the flexible `Specification[]` contract is therefore required.
-- Names, SKUs, category terms, need keywords, features, and descriptions provide useful coverage for relevance ranking, guarded typo recovery, autocomplete, match explanations, no-result queries, and search-intent suggestions.
+- Names, SKUs, product-type terms, requirement keywords, features, and descriptions provide useful coverage for relevance ranking, guarded typo recovery, autocomplete, match explanations, no-result queries, and search-intent suggestions.
 
 ## Data authoring guardrails
 
 When this becomes `data/products.ts`:
 
 - use exactly the 20 products in this matrix;
-- preserve each product's category and performance-need assignments;
+- preserve each product's product-type and project-requirement assignments;
 - write concise, original descriptions and features rather than copying manufacturer copy;
 - give every product at least four specifications from the planned key-spec types;
 - keep values plausible but explicitly fictional; and
-- use `[]` for products with no performance need; do not add a generic performance value.
+- use `[]` for products with no project requirement; do not add a generic requirement value.
 
-Performance-need tags represent discovery relevance within the fictional catalogue and must not be interpreted as standalone certified system-performance claims.
+Project-requirement tags represent discovery relevance within the fictional catalogue and must not be interpreted as standalone certified system-performance claims.
