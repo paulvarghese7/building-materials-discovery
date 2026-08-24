@@ -1,21 +1,21 @@
 import {
-  categoryLabels,
+  productTypeLabels,
   createCatalogueHref,
-  getSearchIntent,
-  performanceNeedLabels,
-  performanceNeeds,
-  productCategories,
+  getSearchRequirementIntent,
+  projectRequirementLabels,
+  projectRequirements,
+  productTypes,
   type CatalogueFilters,
 } from '@/lib/products';
-import type { PerformanceNeed, Product, ProductCategory } from '@/types';
+import type { ProjectRequirement, Product, ProductType } from '@/types';
 
 export type CatalogueSearchMode = 'browse' | 'exact' | 'fuzzy' | 'none';
 
 export type CatalogueMatchReason =
   | 'SKU'
   | 'Product name'
-  | 'Category'
-  | 'Performance need'
+  | 'Product type'
+  | 'Project requirement'
   | 'Feature'
   | 'Short description'
   | 'Description';
@@ -39,10 +39,10 @@ export interface CatalogueSearchResult {
 }
 
 export interface CatalogueFacetCounts {
-  allCategories: number;
-  categories: Record<ProductCategory, number>;
-  allPerformanceNeeds: number;
-  performanceNeeds: Record<PerformanceNeed, number>;
+  allProductTypes: number;
+  productTypes: Record<ProductType, number>;
+  allProjectRequirements: number;
+  projectRequirements: Record<ProjectRequirement, number>;
 }
 
 export type CatalogueSuggestion =
@@ -94,8 +94,8 @@ interface FuzzyCandidate {
 const reasonOrder: readonly CatalogueMatchReason[] = [
   'SKU',
   'Product name',
-  'Category',
-  'Performance need',
+  'Product type',
+  'Project requirement',
   'Feature',
   'Short description',
   'Description',
@@ -118,10 +118,12 @@ function getSearchFields(product: Product): SearchField[] {
   return [
     { reason: 'SKU', value: product.sku, weight: 100 },
     { reason: 'Product name', value: product.name, weight: 80 },
-    { reason: 'Category', value: categoryLabels[product.category], weight: 50 },
+    { reason: 'Product type', value: productTypeLabels[product.productType], weight: 50 },
     {
-      reason: 'Performance need',
-      value: product.performanceNeeds.map((need) => performanceNeedLabels[need]).join(' '),
+      reason: 'Project requirement',
+      value: product.projectRequirements
+        .map((projectRequirement) => projectRequirementLabels[projectRequirement])
+        .join(' '),
       weight: 50,
     },
     { reason: 'Feature', value: product.features.join(' '), weight: 30 },
@@ -133,7 +135,7 @@ function getSearchFields(product: Product): SearchField[] {
 // Limits spelling recovery to high-signal discovery fields and excludes SKU/descriptive copy.
 function getFuzzyFields(product: Product): SearchField[] {
   return getSearchFields(product).filter(({ reason }) =>
-    ['Product name', 'Category', 'Performance need', 'Feature'].includes(reason),
+    ['Product name', 'Product type', 'Project requirement', 'Feature'].includes(reason),
   );
 }
 
@@ -369,15 +371,16 @@ function resolveFuzzyTokens(
   return { queryTokens, corrections };
 }
 
-// Applies category and performance constraints only after global query interpretation is complete.
+// Applies product-type and project-requirement constraints after global query interpretation.
 function applyFilters(
   matches: readonly CatalogueProductMatch[],
   filters: CatalogueFilters,
 ): CatalogueProductMatch[] {
   return matches.filter(
     ({ product }) =>
-      (!filters.category || product.category === filters.category) &&
-      (!filters.need || product.performanceNeeds.includes(filters.need)),
+      (!filters.productType || product.productType === filters.productType) &&
+      (!filters.projectRequirement ||
+        product.projectRequirements.includes(filters.projectRequirement)),
   );
 }
 
@@ -447,60 +450,73 @@ export function getCatalogueFacetCounts(
   searchResult: CatalogueSearchResult,
   filters: CatalogueFilters,
 ): CatalogueFacetCounts {
-  const productsForCategoryCounts = searchResult.allMatches.filter(
-    ({ product }) => !filters.need || product.performanceNeeds.includes(filters.need),
+  const productsForProductTypeCounts = searchResult.allMatches.filter(
+    ({ product }) =>
+      !filters.projectRequirement ||
+      product.projectRequirements.includes(filters.projectRequirement),
   );
-  const productsForNeedCounts = searchResult.allMatches.filter(
-    ({ product }) => !filters.category || product.category === filters.category,
+  const productsForProjectRequirementCounts = searchResult.allMatches.filter(
+    ({ product }) => !filters.productType || product.productType === filters.productType,
   );
 
   return {
-    allCategories: productsForCategoryCounts.length,
-    categories: Object.fromEntries(
-      productCategories.map((category) => [
-        category,
-        productsForCategoryCounts.filter(({ product }) => product.category === category).length,
+    allProductTypes: productsForProductTypeCounts.length,
+    productTypes: Object.fromEntries(
+      productTypes.map((productType) => [
+        productType,
+        productsForProductTypeCounts.filter(({ product }) => product.productType === productType)
+          .length,
       ]),
-    ) as Record<ProductCategory, number>,
-    allPerformanceNeeds: productsForNeedCounts.length,
-    performanceNeeds: Object.fromEntries(
-      performanceNeeds.map((need) => [
-        need,
-        productsForNeedCounts.filter(({ product }) => product.performanceNeeds.includes(need)).length,
+    ) as Record<ProductType, number>,
+    allProjectRequirements: productsForProjectRequirementCounts.length,
+    projectRequirements: Object.fromEntries(
+      projectRequirements.map((projectRequirement) => [
+        projectRequirement,
+        productsForProjectRequirementCounts.filter(({ product }) =>
+          product.projectRequirements.includes(projectRequirement),
+        ).length,
       ]),
-    ) as Record<PerformanceNeed, number>,
+    ) as Record<ProjectRequirement, number>,
   };
 }
 
-// Converts recognizable category or need language into one explicit catalogue-browsing action.
+// Converts recognizable product-type or requirement language into one catalogue action.
 function getDiscoverySuggestion(
   query: string,
   filters: CatalogueFilters,
 ): Extract<CatalogueSuggestion, { type: 'discovery' }> | undefined {
   const normalisedQuery = normaliseSearchText(query);
-  const category = productCategories.find((candidate) =>
-    normaliseSearchText(categoryLabels[candidate]).startsWith(normalisedQuery),
+  const productType = productTypes.find((candidate) =>
+    normaliseSearchText(productTypeLabels[candidate]).startsWith(normalisedQuery),
   );
 
-  if (category) {
+  if (productType) {
     return {
       type: 'discovery',
-      id: `category-${category}`,
-      label: `Browse ${categoryLabels[category]}`,
-      description: 'Category',
-      href: createCatalogueHref({ query: '', category, need: filters.need }),
+      id: `product-type-${productType}`,
+      label: `Browse ${productTypeLabels[productType]}`,
+      description: 'Product type',
+      href: createCatalogueHref({
+        query: '',
+        productType,
+        projectRequirement: filters.projectRequirement,
+      }),
     };
   }
 
-  const need = getSearchIntent(query);
+  const projectRequirement = getSearchRequirementIntent(query);
 
-  return need
+  return projectRequirement
     ? {
         type: 'discovery',
-        id: `need-${need}`,
-        label: `Browse ${performanceNeedLabels[need]}`,
-        description: 'Performance need',
-        href: createCatalogueHref({ query: '', category: filters.category, need }),
+        id: `project-requirement-${projectRequirement}`,
+        label: `Browse ${projectRequirementLabels[projectRequirement]}`,
+        description: 'Project requirement',
+        href: createCatalogueHref({
+          query: '',
+          productType: filters.productType,
+          projectRequirement,
+        }),
       }
     : undefined;
 }

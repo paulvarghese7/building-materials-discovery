@@ -1,6 +1,6 @@
 export default function ProductsLoading() {
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-950" aria-busy="true">
+    <main className="flex-1 bg-slate-50 text-slate-950" aria-busy="true">
       <p className="sr-only" role="status">
         Loading product catalogue
       </p>

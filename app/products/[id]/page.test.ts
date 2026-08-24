@@ -27,15 +27,15 @@ describe('product detail route', () => {
     });
   });
 
-  it('links category, performance, and similar-product discovery back to the catalogue', async () => {
+  it('links type, requirement, and similar-product discovery back to the catalogue', async () => {
     const markup = renderToStaticMarkup(
       await ProductPage({ params: Promise.resolve({ id: 'quietboard-15' }) }),
     );
 
     expect(markup).toContain('aria-label="Browse Boards products"');
-    expect(markup).toContain('href="/products?category=boards"');
+    expect(markup).toContain('href="/products?type=boards"');
     expect(markup).toContain('aria-label="Browse products for Acoustic Performance"');
-    expect(markup).toContain('href="/products?need=acoustic"');
+    expect(markup).toContain('href="/products?requirement=acoustic"');
     expect(markup).toContain('View similar products in boards');
   });
 });

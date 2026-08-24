@@ -3,22 +3,22 @@ import Link from 'next/link';
 import { SearchInput } from '@/components/SearchInput';
 import { products } from '@/data/products';
 import {
-  categoryLabels,
+  productTypeLabels,
   createCatalogueHref,
-  performanceNeedLabels,
-  performanceNeeds,
-  productCategories,
+  projectRequirementLabels,
+  projectRequirements,
+  productTypes,
 } from '@/lib/products';
-import type { PerformanceNeed, ProductCategory } from '@/types';
+import type { ProjectRequirement, ProductType } from '@/types';
 
-const categoryDescriptions: Record<ProductCategory, string> = {
+const productTypeDescriptions: Record<ProductType, string> = {
   boards: 'Internal lining boards for standard, acoustic, fire, and moisture requirements.',
   insulation: 'Mineral-wool products for cavity, thermal, acoustic, and fire-related discovery.',
   profiles: 'Metal studs and tracks for internal partition framing and specialist conditions.',
   accessories: 'Jointing, sealing, and perimeter products for completing internal assemblies.',
 };
 
-const performanceNeedDescriptions: Record<PerformanceNeed, string> = {
+const projectRequirementDescriptions: Record<ProjectRequirement, string> = {
   acoustic: 'Explore products intended for sound-sensitive partitions and perimeter details.',
   fire: 'Find products associated with protected linings, voids, and fire-related joint work.',
   moisture: 'Browse products for humid interiors and moisture-sensitive internal areas.',
@@ -26,40 +26,20 @@ const performanceNeedDescriptions: Record<PerformanceNeed, string> = {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-950">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
-          <Link
-            href="/"
-            className="inline-flex min-h-11 items-center rounded text-xl font-bold tracking-tight text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
-            aria-label="BuildMatch home"
-          >
-            Build<span className="text-teal-700">Match</span>
-          </Link>
-          <nav aria-label="Primary navigation">
-            <Link
-              href="/products"
-              className="inline-flex min-h-11 items-center rounded-md px-3 font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
-            >
-              Products
-            </Link>
-          </nav>
-        </div>
-      </header>
-
+    <div className="flex-1 bg-slate-50 text-slate-950">
       <main>
         <section className="border-b border-slate-200 bg-white">
           <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end lg:gap-16 lg:px-8 lg:py-24">
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.16em] text-teal-700">
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-brand-700">
                 Building material discovery
               </p>
               <h1 className="mt-4 max-w-4xl text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
-                Find building materials by product or performance need.
+                Find building materials by product or project requirement.
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
-                Search a focused fictional catalogue, browse product categories, or start with an
-                acoustic, fire, or moisture requirement.
+                Search a focused fictional catalogue, browse product types, or start with an
+                acoustic, fire, or moisture project requirement.
               </p>
 
               <SearchInput filters={{ query: '' }} products={products} variant="homepage" />
@@ -75,17 +55,17 @@ export default function Home() {
                   <dd className="text-2xl font-semibold">{products.length}</dd>
                 </div>
                 <div className="flex items-baseline justify-between gap-4 py-4">
-                  <dt className="text-sm text-slate-600">Categories</dt>
-                  <dd className="text-2xl font-semibold">{productCategories.length}</dd>
+                  <dt className="text-sm text-slate-600">Product types</dt>
+                  <dd className="text-2xl font-semibold">{productTypes.length}</dd>
                 </div>
                 <div className="flex items-baseline justify-between gap-4 py-4">
-                  <dt className="text-sm text-slate-600">Performance needs</dt>
-                  <dd className="text-2xl font-semibold">{performanceNeeds.length}</dd>
+                  <dt className="text-sm text-slate-600">Requirements</dt>
+                  <dd className="text-2xl font-semibold">{projectRequirements.length}</dd>
                 </div>
               </dl>
               <Link
                 href="/products"
-                className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-md font-semibold text-teal-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
+                className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-md px-2 font-semibold text-brand-800 transition-colors hover:bg-brand-50 hover:text-brand-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-700"
               >
                 View the full catalogue
                 <span aria-hidden="true">→</span>
@@ -94,81 +74,83 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8" aria-labelledby="categories-heading">
-          <div className="max-w-2xl">
-            <p className="text-sm font-bold uppercase tracking-[0.16em] text-teal-700">
-              Product-first discovery
-            </p>
-            <h2 id="categories-heading" className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Browse by category
-            </h2>
-            <p className="mt-4 leading-7 text-slate-600">
-              Start with the type of material you need and refine the catalogue from there.
-            </p>
-          </div>
+        <section className="border-b border-slate-200 bg-slate-50" aria-labelledby="product-types-heading">
+          <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+            <div className="max-w-2xl">
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-brand-700">
+                Product-first discovery
+              </p>
+              <h2 id="product-types-heading" className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+                Browse by product type
+              </h2>
+              <p className="mt-4 leading-7 text-slate-600">
+                Start with the type of material you need and refine the catalogue from there.
+              </p>
+            </div>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {productCategories.map((category, index) => (
-              <Link
-                key={category}
-                href={createCatalogueHref({ query: '', category })}
-                className="group flex min-h-64 flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-colors hover:border-teal-300 hover:bg-teal-50/40 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
-              >
-                <span className="font-mono text-xs font-semibold text-slate-500">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <h3 className="mt-8 text-2xl font-semibold tracking-tight">
-                  {categoryLabels[category]}
-                </h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600">
-                  {categoryDescriptions[category]}
-                </p>
-                <span className="mt-auto flex items-center gap-2 pt-6 font-semibold text-teal-800">
-                  Browse category
-                  <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">
-                    →
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {productTypes.map((productType, index) => (
+                <Link
+                  key={productType}
+                  href={createCatalogueHref({ query: '', productType })}
+                  className="group flex min-h-64 flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-colors hover:border-brand-300 hover:bg-brand-50/40 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-700"
+                >
+                  <span className="font-mono text-xs font-semibold text-slate-500">
+                    {String(index + 1).padStart(2, '0')}
                   </span>
-                </span>
-              </Link>
-            ))}
+                  <h3 className="mt-8 text-2xl font-semibold tracking-tight">
+                    {productTypeLabels[productType]}
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">
+                    {productTypeDescriptions[productType]}
+                  </p>
+                  <span className="mt-auto flex items-center gap-2 pt-6 font-semibold text-brand-800">
+                    Browse product type
+                    <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">
+                      →
+                    </span>
+                  </span>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
 
-        <section className="bg-slate-900 text-white" aria-labelledby="performance-needs-heading">
+        <section className="bg-slate-50" aria-labelledby="project-requirements-heading">
           <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
             <div className="max-w-2xl">
-              <p className="text-sm font-bold uppercase tracking-[0.16em] text-teal-300">
-                Need-first discovery
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-brand-700">
+                Requirement-first discovery
               </p>
               <h2
-                id="performance-needs-heading"
+                id="project-requirements-heading"
                 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl"
               >
-                Browse by performance need
+                Browse by project requirement
               </h2>
-              <p className="mt-4 leading-7 text-slate-300">
+              <p className="mt-4 leading-7 text-slate-600">
                 Begin with the outcome that matters to the project, even when you do not know a
                 product name.
               </p>
             </div>
 
             <div className="mt-8 grid gap-4 lg:grid-cols-3">
-              {performanceNeeds.map((need) => (
+              {projectRequirements.map((projectRequirement) => (
                 <Link
-                  key={need}
-                  href={createCatalogueHref({ query: '', need })}
-                  className="group flex min-h-56 flex-col rounded-2xl border border-slate-700 bg-slate-800 p-6 transition-colors hover:border-teal-400 hover:bg-slate-800/70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-300"
+                  key={projectRequirement}
+                  href={createCatalogueHref({ query: '', projectRequirement })}
+                  className="group flex min-h-64 flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-colors hover:border-brand-300 hover:bg-brand-50/40 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-700"
                 >
-                  <span className="text-xs font-bold uppercase tracking-[0.14em] text-teal-300">
-                    Performance need
+                  <span className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
+                    Project requirement
                   </span>
                   <h3 className="mt-5 text-2xl font-semibold tracking-tight">
-                    {performanceNeedLabels[need]}
+                    {projectRequirementLabels[projectRequirement]}
                   </h3>
-                  <p className="mt-3 leading-7 text-slate-300">
-                    {performanceNeedDescriptions[need]}
+                  <p className="mt-3 leading-7 text-slate-600">
+                    {projectRequirementDescriptions[projectRequirement]}
                   </p>
-                  <span className="mt-auto flex items-center gap-2 pt-6 font-semibold text-teal-200">
+                  <span className="mt-auto flex items-center gap-2 pt-6 font-semibold text-brand-800">
                     Explore matching products
                     <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">
                       →
