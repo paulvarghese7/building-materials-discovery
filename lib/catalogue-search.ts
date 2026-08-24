@@ -101,16 +101,19 @@ const reasonOrder: readonly CatalogueMatchReason[] = [
   'Description',
 ];
 
+// Reduces user and product text to comparable lowercase alphanumeric tokens.
 function normaliseSearchText(value: string): string {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 }
 
+// Converts normalized text into the individual terms required by AND-style search.
 function getTokens(value: string): string[] {
   const normalised = normaliseSearchText(value);
 
   return normalised ? normalised.split(' ') : [];
 }
 
+// Maps one product into the weighted fields used by deterministic relevance scoring.
 function getSearchFields(product: Product): SearchField[] {
   return [
     { reason: 'SKU', value: product.sku, weight: 100 },
@@ -127,12 +130,14 @@ function getSearchFields(product: Product): SearchField[] {
   ];
 }
 
+// Limits spelling recovery to high-signal discovery fields and excludes SKU/descriptive copy.
 function getFuzzyFields(product: Product): SearchField[] {
   return getSearchFields(product).filter(({ reason }) =>
     ['Product name', 'Category', 'Performance need', 'Feature'].includes(reason),
   );
 }
 
+// Returns only the strongest relationship for one token/field pair: exact, prefix, or substring.
 function getMatchMultiplier(fieldValue: string, queryToken: string): number {
   const fieldTokens = getTokens(fieldValue);
 
@@ -147,6 +152,7 @@ function getMatchMultiplier(fieldValue: string, queryToken: string): number {
   return normaliseSearchText(fieldValue).includes(queryToken) ? 1 : 0;
 }
 
+// Scores products without exposing scores publicly, then applies stable dataset-order tie-breaking.
 function rankProducts(
   sourceProducts: readonly Product[],
   queryTokens: readonly QueryToken[],
@@ -176,6 +182,7 @@ function rankProducts(
         reasonScores.set(field.reason, (reasonScores.get(field.reason) ?? 0) + contribution);
       }
 
+      // AND semantics exclude the whole product as soon as one query term has no field match.
       if (!tokenMatched) {
         return;
       }
@@ -212,6 +219,7 @@ function rankProducts(
     .map(({ product, reasons }) => ({ product, reasons }));
 }
 
+// Selects the conservative edit-distance limit and disables fuzzy matching for unsafe token shapes.
 function getMaximumDistance(token: string): 0 | 1 | 2 {
   if (!/^[a-z]+$/.test(token) || token.length < 4) {
     return 0;
@@ -276,6 +284,7 @@ function getBoundedDamerauLevenshteinDistance(
   return distance <= maximumDistance ? distance : undefined;
 }
 
+// Builds a deterministic spelling vocabulary, retaining the strongest occurrence of each token.
 function getFuzzyCandidates(sourceProducts: readonly Product[]): FuzzyCandidate[] {
   const candidates = new Map<string, FuzzyCandidate>();
 
@@ -302,6 +311,7 @@ function getFuzzyCandidates(sourceProducts: readonly Product[]): FuzzyCandidate[
   return [...candidates.values()];
 }
 
+// Interprets unmatched eligible tokens once so results and every facet share the same correction.
 function resolveFuzzyTokens(
   sourceProducts: readonly Product[],
   originalTokens: readonly string[],
@@ -359,6 +369,7 @@ function resolveFuzzyTokens(
   return { queryTokens, corrections };
 }
 
+// Applies category and performance constraints only after global query interpretation is complete.
 function applyFilters(
   matches: readonly CatalogueProductMatch[],
   filters: CatalogueFilters,
@@ -461,6 +472,7 @@ export function getCatalogueFacetCounts(
   };
 }
 
+// Converts recognizable category or need language into one explicit catalogue-browsing action.
 function getDiscoverySuggestion(
   query: string,
   filters: CatalogueFilters,

@@ -16,6 +16,7 @@ interface EmptyStateProps {
 export function EmptyState({ filters, suggestion }: EmptyStateProps) {
   const broadenActions: { href: string; label: string }[] = [];
 
+  // Offer the narrowest reversible changes first while preserving every unrelated active filter.
   if (filters.query) {
     broadenActions.push({
       href: createCatalogueHref({ ...filters, query: '' }),
@@ -37,6 +38,7 @@ export function EmptyState({ filters, suggestion }: EmptyStateProps) {
     });
   }
 
+  // Keep recovery choices focused: the intent suggestion already occupies one prominent action.
   const visibleActions = broadenActions.slice(0, suggestion ? 1 : 2);
 
   return (

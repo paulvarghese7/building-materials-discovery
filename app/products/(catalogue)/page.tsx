@@ -32,6 +32,7 @@ function formatProductCount(count: number): string {
   return `${count} ${count === 1 ? 'product' : 'products'}`;
 }
 
+// Produces grammatical correction copy for either one typo or several corrected query tokens.
 function formatCorrections(corrections: readonly CatalogueCorrection[]): string {
   return new Intl.ListFormat('en', { style: 'long', type: 'conjunction' }).format(
     corrections.map(

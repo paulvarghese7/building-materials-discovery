@@ -1,9 +1,10 @@
 # BuildMatch — Locked Project Decisions
 
-**Status:** Locked before catalogue implementation  
-**Date:** 21 August 2026
+- **Status:** Implemented v1
+- **Initially locked:** 21 August 2026
+- **Last updated:** 24 August 2026
 
-This document records the v1 product and technical decisions derived from the investigation. It is the implementation reference when a later choice is ambiguous.
+This document records the initial v1 product decisions derived from the investigation and the later approved implementation enhancements. It remains the authority when a current product or technical choice is ambiguous.
 
 ## Catalogue shape
 
@@ -88,7 +89,9 @@ export interface Product {
 }
 ```
 
-## Implementation sequence
+## Implementation record
+
+The initial product was completed in the following sequence:
 
 1. Implement the locked model in `types/index.ts`.
 2. Populate `data/products.ts` from the approved [product matrix](./product-matrix.md).
@@ -103,7 +106,7 @@ export interface Product {
 
 ## Final guided-search enhancement
 
-**Status:** Approved 24 August 2026
+**Status:** Implemented 24 August 2026
 
 | Decision | Why |
 | --- | --- |
@@ -116,3 +119,14 @@ export interface Product {
 | Use a manual-selection combobox and retain the native GET form. | Keyboard and assistive-technology behavior takes priority while search remains usable without client JavaScript. |
 | Keep catalogue results server-rendered and add client state only to the shared search control. | This adds responsive URL behavior without converting the catalogue into a large client application. |
 | Standardize local guidance, CI, and deployment metadata on Node 24. | Node 24 is compatible with the installed Next.js release and matches the current supported local runtime. |
+
+## Final discovery-navigation polish
+
+**Status:** Implemented 24 August 2026
+
+| Decision | Why |
+| --- | --- |
+| Make the prominent category and performance tags on product details link to their filtered catalogue views. | Product metadata becomes a direct continuation of discovery without introducing another navigation model. |
+| Define “similar products” as products in the same category. | A transparent category link is useful for a 20-product catalogue and avoids implying a recommendation algorithm. |
+| Show at most two targeted broaden-search actions in empty states. | Removing one constraint at a time is more useful than only clearing all state and preserves unrelated valid filters. |
+| Keep the existing active-filter controls and URL contract. | The polish should reuse established navigation rather than add state or duplicate search logic. |
