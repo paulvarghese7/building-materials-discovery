@@ -25,6 +25,7 @@ const catalogueFormClassName =
 const homepageFormClassName =
   'mt-9 max-w-2xl rounded-2xl border border-slate-200 bg-slate-50 p-3 shadow-sm sm:flex sm:items-end sm:gap-3';
 
+// Shares one accessible suggestion UI while adapting navigation behavior for home and catalogue use.
 export function SearchInput({ filters, products, variant = 'catalogue' }: SearchInputProps) {
   const router = useRouter();
   const listboxId = useId();
@@ -42,12 +43,14 @@ export function SearchInput({ filters, products, variant = 'catalogue' }: Search
   );
   const showSuggestions = isOpen && suggestions.length > 0;
 
+  // Server props change after Back/Forward or link navigation; synchronize without remounting the input.
   if (filters.query !== lastServerQuery) {
     setLastServerQuery(filters.query);
     setInputValue(filters.query);
     setActiveIndex(-1);
   }
 
+  // Cancel any queued URL update if this search control leaves the page.
   useEffect(
     () => () => {
       if (debounceTimer.current) {
@@ -57,6 +60,7 @@ export function SearchInput({ filters, products, variant = 'catalogue' }: Search
     [],
   );
 
+  // Prevents an older delayed query from navigating after a newer explicit action.
   function clearDebounce(): void {
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
@@ -64,6 +68,7 @@ export function SearchInput({ filters, products, variant = 'catalogue' }: Search
     }
   }
 
+  // Runs client navigation in a transition so the complete search region can expose its busy state.
   function navigateTo(href: string, replace = false): void {
     clearDebounce();
     setIsOpen(false);
@@ -77,10 +82,12 @@ export function SearchInput({ filters, products, variant = 'catalogue' }: Search
     });
   }
 
+  // Preserves active catalogue filters while applying or clearing the submitted query immediately.
   function applySearch(query: string): void {
     navigateTo(createCatalogueHref({ ...filters, query }), variant === 'catalogue');
   }
 
+  // Debounces typing and replaces, rather than grows, browser history for each intermediate query.
   function scheduleCatalogueSearch(query: string): void {
     clearDebounce();
     debounceTimer.current = setTimeout(() => {
@@ -91,6 +98,7 @@ export function SearchInput({ filters, products, variant = 'catalogue' }: Search
     }, 300);
   }
 
+  // Routes product/discovery suggestions directly and treats search-all as an immediate submission.
   function selectSuggestion(suggestion: CatalogueSuggestion): void {
     if (suggestion.type === 'search') {
       applySearch(inputValue);
@@ -100,6 +108,7 @@ export function SearchInput({ filters, products, variant = 'catalogue' }: Search
     navigateTo(suggestion.href);
   }
 
+  // Implements manual-selection combobox keys while keeping DOM focus in the search input.
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
     if (event.key === 'ArrowDown' && suggestions.length > 0) {
       event.preventDefault();

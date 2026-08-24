@@ -16,10 +16,12 @@ interface ProductPageProps {
   params: Promise<{ id: string }>;
 }
 
+// Gives Next.js every known product ID so detail pages can be generated at build time.
 export function generateStaticParams() {
   return products.map((product) => ({ id: product.id }));
 }
 
+// Creates product-specific browser/search metadata while handling unknown IDs safely.
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { id } = await params;
   const product = getProductById(id);
@@ -36,6 +38,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   };
 }
 
+// Resolves the requested product and renders its technical details or the route-level not-found UI.
 export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params;
   const product = getProductById(id);

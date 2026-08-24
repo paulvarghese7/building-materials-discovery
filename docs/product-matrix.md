@@ -1,7 +1,8 @@
 # BuildMatch — 20-Product Dataset Matrix
 
-**Status:** Locked before data authoring  
-**Purpose:** Define product coverage and technical shape before writing product descriptions or TypeScript data.
+- **Status:** Implemented and verified
+- **Initially locked:** 21 August 2026
+- **Purpose:** Record the implemented product coverage and technical shape.
 
 All names, SKUs, purposes, and values below are fictional demonstration content. The planned specification types and units are informed by public industry catalogues, but must not be used for construction decisions.
 
@@ -48,9 +49,9 @@ The performance columns count products carrying each tag, so multi-performance p
 - Each performance need is represented by multiple products across multiple categories.
 - Multi-performance products exist in Boards and Insulation: ShieldBoard FM and SecureWool AF.
 - Untagged products exist in every category: CoreBoard Standard, ThermoWool Cavity, StudProfile CW 75, TrackProfile UW 75, ReinforcedProfile UA 50, and JointTape Paper.
-- Some category/performance combinations intentionally return zero results, including `category=profiles&need=fire`, so the catalogue's empty-state behaviour can be exercised.
+- Some category/performance combinations intentionally return zero results, including `category=profiles&need=fire`, so contextual counts and broaden-search recovery actions can be exercised.
 - Specification labels intentionally vary by product family; the flexible `Specification[]` contract is therefore required.
-- Names, SKUs, category terms, need keywords, and descriptions provide useful coverage for search matches, no-result queries, and search-intent suggestions.
+- Names, SKUs, category terms, need keywords, features, and descriptions provide useful coverage for relevance ranking, guarded typo recovery, autocomplete, match explanations, no-result queries, and search-intent suggestions.
 
 ## Data authoring guardrails
 
