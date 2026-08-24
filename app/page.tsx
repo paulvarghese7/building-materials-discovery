@@ -31,7 +31,7 @@ export default function Home() {
         <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
           <Link
             href="/"
-            className="rounded text-xl font-bold tracking-tight text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
+            className="inline-flex min-h-11 items-center rounded text-xl font-bold tracking-tight text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
             aria-label="BuildMatch home"
           >
             Build<span className="text-teal-700">Match</span>

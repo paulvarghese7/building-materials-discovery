@@ -18,10 +18,10 @@ export function ProductCard({ product }: ProductCardProps) {
         <p className="text-xs font-bold uppercase tracking-[0.14em] text-teal-700">
           {categoryLabels[product.category]}
         </p>
-        <p className="font-mono text-xs text-slate-500">{product.sku}</p>
+        <p className="break-all text-right font-mono text-xs text-slate-500">{product.sku}</p>
       </div>
 
-      <h2 className="mt-4 text-xl font-semibold tracking-tight text-slate-950">
+      <h2 className="mt-4 break-words text-xl font-semibold tracking-tight text-slate-950">
         {product.name}
       </h2>
       <p className="mt-3 text-sm leading-6 text-slate-600">{product.shortDescription}</p>

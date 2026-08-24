@@ -23,7 +23,7 @@ function ActiveFilterLink({ href, label, removeLabel }: ActiveFilterLinkProps) {
       href={href}
       scroll={false}
       aria-label={removeLabel}
-      className="inline-flex min-h-10 max-w-full items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 text-sm font-medium text-teal-900 hover:border-teal-300 hover:bg-teal-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+      className="inline-flex min-h-11 max-w-full items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 text-sm font-medium text-teal-900 hover:border-teal-300 hover:bg-teal-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
     >
       <span className="truncate">{label}</span>
       <span aria-hidden="true">×</span>
@@ -51,7 +51,7 @@ export function ActiveFilters({ filters }: ActiveFiltersProps) {
         <Link
           href="/products"
           scroll={false}
-          className="rounded text-sm font-semibold text-teal-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+          className="inline-flex min-h-11 items-center rounded px-1 text-sm font-semibold text-teal-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
         >
           Clear all
         </Link>

@@ -56,7 +56,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <li>
                   <Link
                     href="/products"
-                    className="rounded font-semibold text-teal-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                    className="inline-flex min-h-11 items-center rounded font-semibold text-teal-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
                   >
                     Products
                   </Link>
@@ -65,13 +65,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <li>
                   <Link
                     href={createCatalogueHref({ query: '', category: product.category })}
-                    className="rounded font-semibold text-teal-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                    className="inline-flex min-h-11 items-center rounded font-semibold text-teal-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
                   >
                     {categoryLabel}
                   </Link>
                 </li>
                 <li aria-hidden="true">/</li>
-                <li className="min-w-0 truncate" aria-current="page">
+                <li className="min-w-0 self-center truncate" aria-current="page">
                   {product.name}
                 </li>
               </ol>
@@ -94,7 +94,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
                   Product SKU
                 </p>
-                <p className="mt-2 font-mono text-sm font-semibold text-slate-900">{product.sku}</p>
+                <p className="mt-2 break-all font-mono text-sm font-semibold text-slate-900">
+                  {product.sku}
+                </p>
               </div>
             </div>
           </div>
