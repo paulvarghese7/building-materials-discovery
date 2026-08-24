@@ -4,6 +4,8 @@
 
 BuildMatch is a small building-material product discovery prototype. This investigation was conducted before implementation to understand how established manufacturers structure product catalogues, distinguish product-use contexts from performance requirements, present technical information, and support professional users who may not begin with a specific product name.
 
+> **Implementation note (24 August 2026):** This document remains the historical research record. The completed prototype adds deterministic relevance ranking, guarded typo recovery, accessible suggestions, contextual facet counts, explainable matches, and explicit discovery/recovery links while preserving the taxonomy and scope established here. Current implementation decisions are recorded in [decisions.md](./decisions.md) and summarized in the project [README](../README.md).
+
 The investigation is intentionally focused. Its purpose is not to model the entire building-material industry or reproduce an enterprise product information system. It is to identify enough evidence to make defensible product, UX, data-model, accessibility, and scope decisions for the prototype.
 
 ## 2. Research Questions

@@ -1,69 +1,192 @@
-import Image from "next/image";
+import Link from 'next/link';
+
+import { SearchInput } from '@/components/SearchInput';
+import { products } from '@/data/products';
+import {
+  categoryLabels,
+  createCatalogueHref,
+  performanceNeedLabels,
+  performanceNeeds,
+  productCategories,
+} from '@/lib/products';
+import type { PerformanceNeed, ProductCategory } from '@/types';
+
+const categoryDescriptions: Record<ProductCategory, string> = {
+  boards: 'Internal lining boards for standard, acoustic, fire, and moisture requirements.',
+  insulation: 'Mineral-wool products for cavity, thermal, acoustic, and fire-related discovery.',
+  profiles: 'Metal studs and tracks for internal partition framing and specialist conditions.',
+  accessories: 'Jointing, sealing, and perimeter products for completing internal assemblies.',
+};
+
+const performanceNeedDescriptions: Record<PerformanceNeed, string> = {
+  acoustic: 'Explore products intended for sound-sensitive partitions and perimeter details.',
+  fire: 'Find products associated with protected linings, voids, and fire-related joint work.',
+  moisture: 'Browse products for humid interiors and moisture-sensitive internal areas.',
+};
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="min-h-screen bg-slate-50 text-slate-950">
+      <header className="border-b border-slate-200 bg-white">
+        <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
+          <Link
+            href="/"
+            className="inline-flex min-h-11 items-center rounded text-xl font-bold tracking-tight text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
+            aria-label="BuildMatch home"
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            Build<span className="text-teal-700">Match</span>
+          </Link>
+          <nav aria-label="Primary navigation">
+            <Link
+              href="/products"
+              className="inline-flex min-h-11 items-center rounded-md px-3 font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+            >
+              Products
+            </Link>
+          </nav>
         </div>
+      </header>
+
+      <main>
+        <section className="border-b border-slate-200 bg-white">
+          <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end lg:gap-16 lg:px-8 lg:py-24">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-teal-700">
+                Building material discovery
+              </p>
+              <h1 className="mt-4 max-w-4xl text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
+                Find building materials by product or performance need.
+              </h1>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
+                Search a focused fictional catalogue, browse product categories, or start with an
+                acoustic, fire, or moisture requirement.
+              </p>
+
+              <SearchInput filters={{ query: '' }} products={products} variant="homepage" />
+            </div>
+
+            <aside className="rounded-2xl border border-slate-200 bg-slate-50 p-6" aria-label="Catalogue overview">
+              <p className="text-sm font-bold uppercase tracking-[0.14em] text-slate-500">
+                Focused prototype
+              </p>
+              <dl className="mt-5 divide-y divide-slate-200 border-y border-slate-200">
+                <div className="flex items-baseline justify-between gap-4 py-4">
+                  <dt className="text-sm text-slate-600">Products</dt>
+                  <dd className="text-2xl font-semibold">{products.length}</dd>
+                </div>
+                <div className="flex items-baseline justify-between gap-4 py-4">
+                  <dt className="text-sm text-slate-600">Categories</dt>
+                  <dd className="text-2xl font-semibold">{productCategories.length}</dd>
+                </div>
+                <div className="flex items-baseline justify-between gap-4 py-4">
+                  <dt className="text-sm text-slate-600">Performance needs</dt>
+                  <dd className="text-2xl font-semibold">{performanceNeeds.length}</dd>
+                </div>
+              </dl>
+              <Link
+                href="/products"
+                className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-md font-semibold text-teal-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
+              >
+                View the full catalogue
+                <span aria-hidden="true">→</span>
+              </Link>
+            </aside>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8" aria-labelledby="categories-heading">
+          <div className="max-w-2xl">
+            <p className="text-sm font-bold uppercase tracking-[0.16em] text-teal-700">
+              Product-first discovery
+            </p>
+            <h2 id="categories-heading" className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+              Browse by category
+            </h2>
+            <p className="mt-4 leading-7 text-slate-600">
+              Start with the type of material you need and refine the catalogue from there.
+            </p>
+          </div>
+
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {productCategories.map((category, index) => (
+              <Link
+                key={category}
+                href={createCatalogueHref({ query: '', category })}
+                className="group flex min-h-64 flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-colors hover:border-teal-300 hover:bg-teal-50/40 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-700"
+              >
+                <span className="font-mono text-xs font-semibold text-slate-500">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3 className="mt-8 text-2xl font-semibold tracking-tight">
+                  {categoryLabels[category]}
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-slate-600">
+                  {categoryDescriptions[category]}
+                </p>
+                <span className="mt-auto flex items-center gap-2 pt-6 font-semibold text-teal-800">
+                  Browse category
+                  <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">
+                    →
+                  </span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className="bg-slate-900 text-white" aria-labelledby="performance-needs-heading">
+          <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+            <div className="max-w-2xl">
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-teal-300">
+                Need-first discovery
+              </p>
+              <h2
+                id="performance-needs-heading"
+                className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl"
+              >
+                Browse by performance need
+              </h2>
+              <p className="mt-4 leading-7 text-slate-300">
+                Begin with the outcome that matters to the project, even when you do not know a
+                product name.
+              </p>
+            </div>
+
+            <div className="mt-8 grid gap-4 lg:grid-cols-3">
+              {performanceNeeds.map((need) => (
+                <Link
+                  key={need}
+                  href={createCatalogueHref({ query: '', need })}
+                  className="group flex min-h-56 flex-col rounded-2xl border border-slate-700 bg-slate-800 p-6 transition-colors hover:border-teal-400 hover:bg-slate-800/70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-300"
+                >
+                  <span className="text-xs font-bold uppercase tracking-[0.14em] text-teal-300">
+                    Performance need
+                  </span>
+                  <h3 className="mt-5 text-2xl font-semibold tracking-tight">
+                    {performanceNeedLabels[need]}
+                  </h3>
+                  <p className="mt-3 leading-7 text-slate-300">
+                    {performanceNeedDescriptions[need]}
+                  </p>
+                  <span className="mt-auto flex items-center gap-2 pt-6 font-semibold text-teal-200">
+                    Explore matching products
+                    <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">
+                      →
+                    </span>
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
       </main>
+
+      <footer className="border-t border-slate-200 bg-white">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 text-sm text-slate-600 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
+          <p className="font-semibold text-slate-900">BuildMatch</p>
+          <p>Product information is fictional demonstration data, not construction guidance.</p>
+        </div>
+      </footer>
     </div>
   );
 }
