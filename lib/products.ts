@@ -124,6 +124,18 @@ export function createCatalogueHref(filters: CatalogueFilters): string {
   return queryString ? `/products?${queryString}` : '/products';
 }
 
+// Builds the explicit CTA target for accepting a deterministic search-intent suggestion.
+export function createSearchIntentHref(
+  filters: CatalogueFilters,
+  suggestedNeed: PerformanceNeed,
+): string {
+  return createCatalogueHref({
+    query: '',
+    ...(filters.category ? { category: filters.category } : {}),
+    need: suggestedNeed,
+  });
+}
+
 // Finds the product used by an individual product-detail route.
 export function getProductById(id: string): Product | undefined {
   return products.find((product) => product.id === id);
