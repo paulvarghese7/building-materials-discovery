@@ -64,7 +64,12 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               <h2 id="product-results-heading" className="text-2xl font-semibold tracking-tight">
                 Product catalogue
               </h2>
-              <p className="shrink-0 text-sm font-medium text-slate-600" aria-live="polite">
+              <p
+                className="shrink-0 text-sm font-medium text-slate-600"
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+              >
                 {formatProductCount(filteredProducts.length)}
               </p>
             </div>

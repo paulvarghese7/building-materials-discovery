@@ -14,7 +14,7 @@ export function ProductSpecifications({ specifications }: ProductSpecificationsP
           className="grid gap-1 py-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] sm:gap-6"
         >
           <dt className="text-sm font-medium text-slate-600">{specification.label}</dt>
-          <dd className="text-sm font-semibold text-slate-950 sm:text-right">
+          <dd className="break-words text-sm font-semibold text-slate-950 sm:text-right">
             {specification.value}
           </dd>
         </div>

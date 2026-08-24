@@ -20,6 +20,11 @@ interface FilterLinkProps {
   label: string;
 }
 
+interface FilterGroupsProps {
+  filters: CatalogueFilters;
+  idPrefix: string;
+}
+
 const filterLinkClassName =
   'flex min-h-11 items-center rounded-lg border px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700';
 
@@ -48,18 +53,17 @@ function getNeedHref(filters: CatalogueFilters, need?: PerformanceNeed): string 
   return createCatalogueHref({ ...filters, need });
 }
 
-// Renders each single-select filter as semantic navigation into URL-backed catalogue state.
-export function ProductFilters({ filters }: ProductFiltersProps) {
+function FilterGroups({ filters, idPrefix }: FilterGroupsProps) {
+  const categoryHeadingId = `${idPrefix}-category-filter-heading`;
+  const performanceHeadingId = `${idPrefix}-performance-filter-heading`;
+
   return (
-    <aside
-      className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
-      aria-label="Product filters"
-    >
+    <>
       <div>
-        <h2 id="category-filter-heading" className="text-sm font-semibold text-slate-950">
+        <h2 id={categoryHeadingId} className="text-sm font-semibold text-slate-950">
           Category
         </h2>
-        <nav className="mt-2" aria-labelledby="category-filter-heading">
+        <nav className="mt-2" aria-labelledby={categoryHeadingId}>
           <ul className="space-y-1">
             <li>
               <FilterLink
@@ -82,10 +86,10 @@ export function ProductFilters({ filters }: ProductFiltersProps) {
       </div>
 
       <div className="mt-7 border-t border-slate-200 pt-6">
-        <h2 id="performance-filter-heading" className="text-sm font-semibold text-slate-950">
+        <h2 id={performanceHeadingId} className="text-sm font-semibold text-slate-950">
           Performance need
         </h2>
-        <nav className="mt-2" aria-labelledby="performance-filter-heading">
+        <nav className="mt-2" aria-labelledby={performanceHeadingId}>
           <ul className="space-y-1">
             <li>
               <FilterLink
@@ -106,6 +110,45 @@ export function ProductFilters({ filters }: ProductFiltersProps) {
           </ul>
         </nav>
       </div>
-    </aside>
+    </>
+  );
+}
+
+// Uses a native disclosure on small screens and a persistent sidebar when space allows.
+export function ProductFilters({ filters }: ProductFiltersProps) {
+  const activeFilterCount = Number(Boolean(filters.category)) + Number(Boolean(filters.need));
+  const activeFilterLabel = `${activeFilterCount} active ${activeFilterCount === 1 ? 'filter' : 'filters'}`;
+
+  return (
+    <>
+      <details className="group rounded-2xl border border-slate-200 bg-white shadow-sm lg:hidden">
+        <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 rounded-2xl px-4 py-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 [&::-webkit-details-marker]:hidden">
+          <span className="font-semibold text-slate-950">Filters</span>
+          <span className="flex items-center gap-3">
+            {activeFilterCount > 0 && (
+              <span className="rounded-full bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-900">
+                {activeFilterLabel}
+              </span>
+            )}
+            <span
+              aria-hidden="true"
+              className="text-lg text-slate-500 transition-transform group-open:rotate-180"
+            >
+              ↓
+            </span>
+          </span>
+        </summary>
+        <div className="border-t border-slate-200 p-4 sm:p-5">
+          <FilterGroups filters={filters} idPrefix="mobile" />
+        </div>
+      </details>
+
+      <aside
+        className="hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm lg:block"
+        aria-label="Product filters"
+      >
+        <FilterGroups filters={filters} idPrefix="desktop" />
+      </aside>
+    </>
   );
 }
