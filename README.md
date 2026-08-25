@@ -137,10 +137,10 @@ BuildMatch does not include authentication, a backend, database, CMS, comparison
 
 The dataset is intentionally small, the taxonomy is simplified, fuzzy matching is conservative, and project-requirement tags indicate discovery relevance rather than certified standalone product or system performance.
 
-## AI-assisted workflow
-
-AI tools supported brainstorming, research assistance, implementation assistance, and review/debugging. Product decisions, source interpretation, scope choices, code changes, and submitted behavior were reviewed and tested by the candidate. The application does not use AI at runtime.
-
 ## Deployment
 
-The production URL and final interface screenshots will be added after the release branch is merged to `main` and the deployed routes have passed the same search, keyboard, and responsive checks.
+BuildMatch is deployed on Vercel: [https://building-materials-discovery.vercel.app/](https://building-materials-discovery.vercel.app/)
+
+## AI assistance
+
+AI-assisted development tools were used during this project for brainstorming, implementation support, code review, and documentation refinement. I reviewed, understood, tested, and validated the final implementation and remain responsible for all technical and product decisions.
